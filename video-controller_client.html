@@ -1,0 +1,205 @@
+<!-- This is a Node+WebSocket powered demo to sync videos
+     across different browsers. This file is the client,
+     the other one is the Node server. Powered by Node and
+     http://github.com/miksago/node-websocket-server -->
+
+<style>
+  .inactive { display: none; }
+  .active { display: block; }
+  
+  @font-face {
+	/* typeface: Xenon2 http://www.splintered.co.uk/experiments/61/ */
+	font-family: "Xenon2";
+	src: url(xenon2.ttf);
+}
+
+html { background: #eee; }
+h1 { font-size: 0.7em; margin: 0; padding: 0; }
+
+body {
+	background: #eee;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 0.9em;
+	line-height: 1.2;
+	color: #222;
+	padding: 0; margin: 0.25em;
+}
+
+a { color: #227; }
+
+small { font-size: 0.75em; }
+
+video {
+	display: block; /* styling shim for older browsers */
+	border: 5px #ddd solid;
+	border-radius: 5px;
+}
+
+#controls {
+	position: absolute;
+	bottom: 20px;
+	left: 113px;
+	border-radius: 5px;
+	border: 1px #333 solid;
+	background: #000 url(gradient.png) repeat-x top left;
+	width: 200px;
+	height: 31px;
+	opacity: 0.3;
+	-o-transition: all 0.5s ease-in-out;
+	-webkit-transition: all 0.5s ease-in-out;
+	-moz-transition: all 0.5s ease-in-out;
+	transition: all 0.5s ease-in-out;
+}
+
+#controls:hover { 
+	border-color: #555;
+	opacity: 0.85;
+}
+
+#controls button {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	width: 15px;
+	height: 15px;
+	padding: 0;
+	margin: 0;
+	border: none;
+	background: transparent;
+}
+
+#controls #display {
+	position: absolute;
+	top: 6px;
+	left: 45px;
+	padding: 0;
+	margin: 0;
+	color: #fff;
+	font-family: "Xenon2", sans-serif;
+	font-size: 16px;
+}
+
+#controls #volume {
+	position: absolute;
+	top: 6px;
+	right: 8px;
+	width: 50px;
+	height: 15px;
+}
+
+#controls #volumeicon {
+	position: absolute;
+	top: 8px;
+	right: 62px;
+}
+
+#chooser, #chooser li { list-style: none; margin: 0; padding: 0; }
+#chooser { margin-top: 1em; }
+#chooser li { float: left; }
+#chooser button { background: none; border: none; margin: 0 4px; padding: 0;
+	opacity: 0.5; 	
+	-o-transition: all 0.3s ease-in-out;
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+}
+#chooser button:focus, #chooser button:hover { opacity: 1; }
+
+#credits { clear:left; padding: 0.25em 0 0 0; }
+#credits p { margin: 0; padding: 0; }
+small { font-size: 0.5em; }
+  
+  
+  
+  
+</style>
+
+<script>
+
+	"use strict";
+	var controller = null;
+	window.onload = function() {
+
+    var connection = new WebSocket('ws://localhost:8000');
+	if (connection == null)
+		alert("Message is sent null..."+connection);
+    connection.onopen = function () {  
+		//alert("open..."+connection);
+	};
+	
+	connection.onerror = function (error) {
+        // just in there were some problems with conenction...
+        alert("error.."+error.toString());
+    };
+	
+
+    var video = $_("video");
+	
+    video.addEventListener("timeupdate", function() {
+	
+      
+    }, true);
+    video.addEventListener("pause", function() {
+	
+    
+    }, true);
+	    // most important part - incoming messages
+		//alert("Message is sent...");
+    connection.onmessage = function (message) {
+		  
+		 var matches;
+		matches = message.data.split(/\s/g);
+		//alert("Message is sent..."+matches[0]);
+		switch (matches[0]){
+		case "control":
+			$_("#controller").innerHTML = matches[1];
+			//alert("src.."+match[1]+'.mp4');
+			video.src = matches[1];
+			//v.src = targ.getAttribute('data-file')+'.mp4';
+			video.load();
+			video.play();
+			if (video.paused){
+				video.play();
+			}
+			break;
+		case "userCount":
+			document.getElementById("userCount").innerHTML = matches[1];
+			break;
+		case "pause":
+			//video.currentTime = matches[1];
+			video.pause();
+			//alert("paused.."+matches[1]);
+			break;;
+		case "timestamp":
+			var estimatedTimeOnMaster = parseInt(matches[1])+1;
+			video.currentTime = estimatedTimeOnMaster;
+			if (Math.abs(estimatedTimeOnMaster-video.currentTime)>5)
+			  video.currentTime = estimatedTimeOnMaster;
+			if (video.paused){
+				video.play();
+			}
+			break;
+		}
+	  };
+	
+	
+};
+
+
+
+function $_(sel) {
+  return document.querySelector(sel);
+}
+
+
+</script>
+
+
+<div id="room" class="active">
+ 
+  <p>Channel Controller: <span id="controller">---</span></p>
+  <p><video id="video" src="videos/windowsill.mp4" controls></video></p>
+</div>
+
+
+
