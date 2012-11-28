@@ -3,7 +3,7 @@ var sys = require("sys");
 
 var WebSocketServer = require('websocket').server;
 var http = require('http');
-var webSocketsServerPort = 8000;
+var webSocketsServerPort = 8888;
 
 
 
@@ -52,9 +52,11 @@ wsServer.on('request', function (request) {
 				{
 					controlVideo=matches[1];
 				}
-				if(userCount!=clients.length)
+				if(userCount!=clients.length && clients.length>1)
 				{
 					clients[clients.length-1].send("control "+controlVideo);
+					// we assume the first clients in this server is the contrroller
+					clients[0].send("userCount "+userCount);
 					++userCount;
 				}
 				

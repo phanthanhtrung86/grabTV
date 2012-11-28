@@ -120,7 +120,7 @@ small { font-size: 0.5em; }
 	var controller = null;
 	window.onload = function() {
 
-    var connection = new WebSocket('ws://localhost:8000');
+    var connection = new WebSocket('ws://localhost:8888');
 	if (connection == null)
 		//alert("Message is sent..."+connection);
     connection.onopen = function () {  
@@ -227,9 +227,20 @@ small { font-size: 0.5em; }
 	//var b = document.querySelectorAll("button.nut");
 	//alert("chooser button" + b.length);
 	
+	
+	
+	
+	
 	for(var i = 0; i<b.length; i++) {
 		//alert("chooser button" + i);
 			b[i].addEventListener('click',function(e) {
+			
+			// We are going to update the value of number of user
+			
+			
+			
+			
+			
 			//alert("chooser button" + b.length);
 				var v = document.getElementById('video');
 
@@ -259,7 +270,18 @@ small { font-size: 0.5em; }
 				//v.pause();
 			},true);
 		}
-	
+	/*
+	// connection to calculate the number of client
+	var conn;
+	conn = io.connect('http://localhost:8000');
+	conn.on('message', function (ev) {
+      var matches;
+	  
+      if (matches = ev.data.match(/^userCount (.+)$/)) {
+	  alert("matches..."+matches[1]);
+        document.getElementById("userCount").innerHTML = matches[1];
+      }
+    });*/
 };
 
 function iAmControlling() {
@@ -278,6 +300,7 @@ function $_(sel) {
 <div id="room" class="active">
  
   <p>Channel Controller: <span id="controller">---</span></p>
+   <p>Users: <span id="userCount"></span></p>
   <p><video id="video" src="videos/windowsill.mp4" controls></video></p>
 </div>
 
