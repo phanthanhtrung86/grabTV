@@ -145,11 +145,23 @@ small { font-size: 0.5em; }
     }, true);
 	    // most important part - incoming messages
 		//alert("Message is sent...");
+		var container = document.getElementById('myList');
+ 
     connection.onmessage = function (message) {
 		  
 		 var matches;
 		matches = message.data.split(/\s/g);
 		//alert("Message is sent..."+matches[0]);
+		// write the log into the list on screen
+		// Create a new <li> element for to insert inside <ul id="myList">
+ var new_element = document.createElement('li');
+new_element.innerHTML = matches[0]+matches[1];
+container.insertBefore(new_element, container.firstChild);
+
+		
+		
+		
+		
 		switch (matches[0]){
 		case "control":
 			$_("#controller").innerHTML = matches[1];
@@ -161,20 +173,35 @@ small { font-size: 0.5em; }
 			if (video.paused){
 				video.play();
 			}
+			
+			
+			
+			
+			
 			break;
 		case "userCount":
 			document.getElementById("userCount").innerHTML = matches[1];
 			break;
 		case "pause":
-			//video.currentTime = matches[1];
+			video.currentTime = matches[1];
 			video.pause();
 			//alert("paused.."+matches[1]);
-			break;;
+			break;
+		case "play":
+			video.currentTime = matches[1];
+			video.play();
+			//alert("paused.."+matches[1]);
+			break;	
+		/*case "seeked":
+			video.currentTime = matches[1];
+			video.play();
+			//alert("paused.."+matches[1]);
+			break;	*/
 		case "timestamp":
-			var estimatedTimeOnMaster = parseInt(matches[1])+1;
+			var estimatedTimeOnMaster = parseInt(matches[1]);
 			video.currentTime = estimatedTimeOnMaster;
-			if (Math.abs(estimatedTimeOnMaster-video.currentTime)>5)
-			  video.currentTime = estimatedTimeOnMaster;
+			//if (Math.abs(estimatedTimeOnMaster-video.currentTime)>5)
+			//  video.currentTime = estimatedTimeOnMaster;
 			if (video.paused){
 				video.play();
 			}
@@ -199,6 +226,8 @@ function $_(sel) {
  
   <p>Channel Controller: <span id="controller">---</span></p>
   <p><video id="video" src="videos/windowsill.mp4" controls></video></p>
+  <ul id="myList">
+  </ul>
 </div>
 
 
