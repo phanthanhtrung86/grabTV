@@ -23,12 +23,14 @@ var wsServer = new WebSocketServer({
     httpServer: server
 });
 
-var userCount = [];
+//var userCount = [];
 
 // list of currently connected clients (users)
 var clients = [ ];
+var isAllReady=0;
 if (wsServer == null)
-console.log((new Date()) + " wsServer + " + wsServer);
+	console.log((new Date()) + " wsServer + " + wsServer);
+
 wsServer.on('request', function (request) {
 		 console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
 
@@ -41,32 +43,62 @@ wsServer.on('request', function (request) {
    //var connection = request.accept('echo-protocol', request.origin);
     // we need to know client index to remove them on 'close' event
    var index = clients.push(connection) - 1;
-    console.log((new Date()) + ' Connection accepted.');
+    console.log((new Date()) + ' Connection accepted. Index of connection: '+ index);
+	for (var i=0; i < clients.length; i++) {  
+		clients[i].send("userCount "+clients.length); 
+		console.log("Client "+ i + " receives the userCount number: "+ clients.length);
+	}
 	var controlVideo="";
-	var userCount=[];
+	//var userCount=[];
+	
+	// we assume the client [0] is the controller and is created in the first time
     connection.on('message', function(message) {
-                // broadcast message to all connected clients
-				var matches;
-				matches = message.utf8Data.split(/\s/g);
-				if(matches[0]=="control")
-				{
-					controlVideo=matches[1];
-				}
-				if(userCount!=clients.length && clients.length>1)
-				{
-					clients[clients.length-1].send("control "+controlVideo);
-					// we assume the first clients in this server is the contrroller
-					clients[0].send("userCount "+userCount);
-					++userCount;
-				}
+		// broadcast message to all connected clients
+		var matches;
+		matches = message.utf8Data.split(/\s/g);
+		if(matches[0]=="control"){
+			isAllReady=0;
+			controlVideo=matches[1];
+			for (var i=0; i < clients.length; i++){  
+				//message ="timestamp " + 5;
+				clients[i].send(message.utf8Data); 
+				//connection.send(message.utf8Data); 
+				console.log("Client "+ i + " control video: "+ message.utf8Data);
+			
+			}
+		}
+		if(matches[0]=="canplay"){
+			++isAllReady;
+			console.log("Number of ready clients: "+ isAllReady);
+			// If controller and client are ready --> start playing
+			if(isAllReady>1 && isAllReady==clients.length){						
+				for (var i=0; i < clients.length; i++) {  
+					clients[i].send("isAllReady "+isAllReady);
+					console.log("All are ready: "+ isAllReady);
+				}	
+			}
+		}
+		// update userCount --> maybe can delete this one
+		/*if(userCount!=clients.length)
+		{
+			// we assume the first clients in this server is the contrroller
+			++userCount;
+			
+		}*/
+		if(matches[0]=="timestamp"){
+			for (var i=0; i < clients.length; i++) {  
+				clients[i].send(message.utf8Data); 
+				console.log("Client "+ i + ": "+ message.utf8Data);
 				
-                for (var i=0; i < clients.length; i++) {  
-					//message ="timestamp " + 5;
-					clients[i].send(message.utf8Data); 
-					console.log("Client "+ i + "is transfering "+ message.utf8Data);
-					
-					}
-				//connection.send(json);
+				}
+		}
+		if(matches[0]=="pause"){
+			for (var i=0; i < clients.length; i++) {  
+				clients[i].send(message.utf8Data); 
+				console.log("Client "+ i + ": "+ message.utf8Data);
+				
+				}
+		}
     });
 
     // user disconnected
@@ -75,6 +107,7 @@ wsServer.on('request', function (request) {
                 + connection.remoteAddress + " disconnected.");
             // remove user from the list of connected clients
             clients.splice(index, 1);
+			--isAllReady;
 			
 });
 });

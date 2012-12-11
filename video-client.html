@@ -2,6 +2,9 @@
      across different browsers. This file is the client,
      the other one is the Node server. Powered by Node and
      http://github.com/miksago/node-websocket-server -->
+<head>
+<title>Client</title>
+<script type="text/javascript" src="http://s1-www.ltvimg.com/cdn/farfuture/lsxH-l4pq1ntV5Qya6DEfdUxTg8N1TiF1PZ1xTIXMRw/mtime:1354738998/sites/default/files/js/js_c88f744f10c5c148c676e8f59d692ce8.js"></script>
 
 <style>
   .inactive { display: none; }
@@ -113,11 +116,13 @@ small { font-size: 0.5em; }
   
   
 </style>
-
+</head>
 <script>
 
 	"use strict";
 	var controller = null;
+	var isAllReadyFlag=false;
+	var time_interval=1000;
 	window.onload = function() {
 
     var connection = new WebSocket('ws://localhost:8888');
@@ -134,18 +139,36 @@ small { font-size: 0.5em; }
 	
 
     var video = $_("video");
-	
+	var userCount;
     video.addEventListener("timeupdate", function() {
-	
-      
     }, true);
+	
     video.addEventListener("pause", function() {
-	
-    
     }, true);
+	
+	/*
+	// this event will be called during video is buffering the data- Chrome can not run the event progress
+	video.addEventListener("progress",function(e){
+		//alert("progress");
+		//if(e.total && e.loaded)
+		{
+           // percentage of video loaded
+          var proportion = Math.round( e.loaded / e.total );
+          container.insertBefore(" "+(proportion * 100), container.firstChild);
+		}
+	},true);
+*/
+
+	// Script to be run when the media actually has enough buffer
+	video.addEventListener("canplay", function() {
+		connection.send("canplay "+video.currentTime);
+    }, true);
+	
+	
+	
 	    // most important part - incoming messages
 		//alert("Message is sent...");
-		var container = document.getElementById('myList');
+	var container = document.getElementById('myList');
  
     connection.onmessage = function (message) {
 		  
@@ -154,54 +177,44 @@ small { font-size: 0.5em; }
 		//alert("Message is sent..."+matches[0]);
 		// write the log into the list on screen
 		// Create a new <li> element for to insert inside <ul id="myList">
- var new_element = document.createElement('li');
-new_element.innerHTML = matches[0]+matches[1];
-container.insertBefore(new_element, container.firstChild);
-
-		
-		
-		
-		
+		var new_element = document.createElement('li');
+		new_element.innerHTML = matches[0]+matches[1];
+		container.insertBefore(new_element, container.firstChild);
+	
 		switch (matches[0]){
 		case "control":
 			$_("#controller").innerHTML = matches[1];
-			//alert("src.."+match[1]+'.mp4');
+			
 			video.src = matches[1];
-			//v.src = targ.getAttribute('data-file')+'.mp4';
+			//video.src="http://content.bitsontherun.com/videos/q1fx20VZ-52qL9xLP.mp4";
 			video.load();
-			video.play();
-			if (video.paused){
-				video.play();
-			}
+			progressUpdate(true);
 			
-			
-			
-			
-			
+			//alert("haha"+video.src);
 			break;
+			
 		case "userCount":
+			userCount=parseInt(matches[1]);
 			document.getElementById("userCount").innerHTML = matches[1];
 			break;
 		case "pause":
-			video.currentTime = matches[1];
 			video.pause();
-			//alert("paused.."+matches[1]);
-			break;
-		case "play":
 			video.currentTime = matches[1];
-			video.play();
-			//alert("paused.."+matches[1]);
+			break;
+		/*case "isAllReady":
+			isAllReadyFlag=parseInt(matches[1]);
 			break;	
-		/*case "seeked":
+		case "seeked":
 			video.currentTime = matches[1];
 			video.play();
 			//alert("paused.."+matches[1]);
 			break;	*/
 		case "timestamp":
 			var estimatedTimeOnMaster = parseInt(matches[1]);
-			video.currentTime = estimatedTimeOnMaster;
-			//if (Math.abs(estimatedTimeOnMaster-video.currentTime)>5)
-			//  video.currentTime = estimatedTimeOnMaster;
+			//video.currentTime = estimatedTimeOnMaster;
+			if (Math.abs(estimatedTimeOnMaster-video.currentTime)>time_interval)
+			  video.currentTime = estimatedTimeOnMaster;
+			  
 			if (video.paused){
 				video.play();
 			}
@@ -213,22 +226,77 @@ container.insertBefore(new_element, container.firstChild);
 };
 
 
-
 function $_(sel) {
   return document.querySelector(sel);
 }
 
-
+/*
+    var tag = document.getElementById("video");
+    var update = false;
+    //tag.addEventListener("progress",eventProgress, true);
+    tag.addEventListener('waiting',eventWaiting);
+    tag.addEventListener('stalled',eventStalled);
+    tag.addEventListener('suspend',eventSuspend);
+    function appendLog(text) {
+        
+		container.insertBefore(text, container.firstChild);
+    };
+    
+    function getBuffered() {
+        appendLog("Buffered: " + getBufferedRange());
+    };
+    function getBufferedRange() {
+        var range = '-';
+        if(tag.buffered.length) {
+            range = '';
+            for (var i=0; i<tag.buffered.length; i++) { 
+                range += Math.round(tag.buffered.start(i)) +  "s-" +
+                    Math.round(tag.buffered.end(i)) + "s";
+                if(i<tag.buffered.length-1) { range +=", "; }
+            }
+        }
+        return range;
+    };
+    function eventProgress() {
+		alert("Beginning update");
+        if(update) {
+            appendLog("Progress event fired (buffered="+getBufferedRange()+")");
+        }
+    };
+	
+	
+	video.addEventListener("progress",function(e){
+		alert("progress");
+		if(true) {
+            appendLog("Progress event fired (buffered="+getBufferedRange()+")");
+        }
+	},true);
+	
+	
+    function eventWaiting() {
+        appendLog("Waiting event fired (buffered="+getBufferedRange()+")");
+    };
+    function eventStalled() {
+        appendLog("Stalled event fired (buffered="+getBufferedRange()+")");
+    };
+    function eventSuspend() {
+        appendLog("Suspend event fired (buffered="+getBufferedRange()+")");
+    };
+    function progressUpdate(state) {
+		
+        update = state;
+    };*/
 </script>
-
 
 <div id="room" class="active">
  
   <p>Channel Controller: <span id="controller">---</span></p>
-  <p><video id="video" src="videos/windowsill.mp4" controls></video></p>
+  <p>Users: <span id="userCount"></span></p>
+  <p><video  id="video" src="videos/windowsill.mp4" controls="controls" preload="none" autobuffer="true"></video></p>
   <ul id="myList">
   </ul>
 </div>
+
 
 
 
