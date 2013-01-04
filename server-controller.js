@@ -74,7 +74,7 @@ wsServer.on('request', function (request) {
 			if(isAllReady>1 && isAllReady==clients.length){						
 				for (var i=0; i < clients.length; i++) {  
 					clients[i].send("isAllReady "+isAllReady);
-					console.log("All are ready: "+ isAllReady);
+					console.log("All "+i+" are ready: "+ isAllReady);
 				}	
 			}
 		}

@@ -178,7 +178,9 @@ small { font-size: 0.5em; }
 		// write the log into the list on screen
 		// Create a new <li> element for to insert inside <ul id="myList">
 		var new_element = document.createElement('li');
-		new_element.innerHTML = matches[0]+matches[1];
+		//new_element.innerHTML = matches[0]+matches[1];
+		new_element.innerHTML = message.data;
+		
 		container.insertBefore(new_element, container.firstChild);
 	
 		switch (matches[0]){

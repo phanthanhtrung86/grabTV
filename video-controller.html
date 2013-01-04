@@ -150,11 +150,16 @@ small { font-size: 0.5em; }
 		// the function set interval will replace for timeupdate
 		// check all the clients are ready or not?
 		//myTimer=setInterval(function(){connection.send("timestamp " + video.currentTime);},time_interval);
-		if(isAllReady()==true)
+		//connection.send("timestamp " + video.currentTime);
+		//alert("value"+isAllReadyFlag);
+		// when all players are ready --> isAllReadyFlag >0
+		if(isAllReadyFlag>0)
+		{
 		
 			myTimer=setInterval(function(){connection.send("timestamp " + video.currentTime);},time_interval);
+			connection.send("timestamp " + video.currentTime);
 			//alert("It's okay to play due to all players are ready");
-		 
+		 }
 		else{
 			alert("Not ready for all users");
 		}
@@ -212,6 +217,7 @@ small { font-size: 0.5em; }
 		  
 		 var matches;
 		matches = message.data.split(/\s/g);
+		//alert(message.data);
 		switch (matches[0]){
 		case "control":
 			$_("#controller").innerHTML = matches[1];
@@ -221,9 +227,10 @@ small { font-size: 0.5em; }
 			document.getElementById("userCount").innerHTML = matches[1];
 			break;
 		case "isAllReady":
+		
 			isAllReadyFlag=parseInt(matches[1]);
 			//numberUserReady=parseInt(matches[1]);
-			//alert("It's ready to start broadcasting");
+			alert("It's ready to start broadcasting"+isAllReadyFlag);
 			break;
 		case "pause":
 			video.currentTime = parseInt(matches[1]);
@@ -278,9 +285,8 @@ small { font-size: 0.5em; }
 	
 	
 	function isAllReady(){
-		if (isAllReadyFlag == userCount)
-			return true;
-		return false;
+		return(isAllReadyFlag>0);
+	
 	}
 	function iAmControlling() {
 		
