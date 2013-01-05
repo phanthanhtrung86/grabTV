@@ -133,9 +133,11 @@ small { font-size: 0.5em; }
         //alert("error.."+error.toString());
     };
 	var isAllReadyFlag=0;
+	var isCurVideoFlag="";
 	var userCount=0;
 	var time_interval = 5000;
 	var myTimer;
+	var myTimeout;
     var video = $_("video");
 
 	/*
@@ -155,9 +157,9 @@ small { font-size: 0.5em; }
 		// when all players are ready --> isAllReadyFlag >0
 		if(isAllReadyFlag>0)
 		{
-		
-			myTimer=setInterval(function(){connection.send("timestamp " + video.currentTime);},time_interval);
-			connection.send("timestamp " + video.currentTime);
+			myTimeout=setTimeout(function(){connection.send("timestamp " + video.currentTime)},0);
+			myTimer=setInterval(function(){connection.send("timestamp " + video.currentTime)},time_interval);
+			//connection.send("timestamp " + video.currentTime);
 			//alert("It's okay to play due to all players are ready");
 		 }
 		else{
@@ -169,12 +171,18 @@ small { font-size: 0.5em; }
 	
     video.addEventListener("pause", function() {
 		// Delete the time interval when video stop
-		clearTimeout(myTimer);
+		
 		connection.send("pause "+video.currentTime);
+		window.clearInterval(myTimer);
+		window.clearTimeout(myTimeout);
+		//clearTimeout(myTimer);
+		//clearInterval
     }, true);
 	video.addEventListener("ended", function() {
 		// Delete the time interval when video stop
-		clearTimeout(myTimer);
+		window.clearInterval(myTimer);
+		window.clearTimeout(myTimeout);
+		
     }, true);
 	
 	video.addEventListener("canplay", function() {
@@ -254,7 +262,8 @@ small { font-size: 0.5em; }
 
 	for(var i = 0; i<b.length; i++) {
 		b[i].addEventListener('click',function(e) {
-			isAllReadyFlag=0;
+			
+			
 
 			/* kludge to get Safari to behave... */
 			var targ = e.target;
@@ -269,16 +278,25 @@ small { font-size: 0.5em; }
 			
 			
 			var temp = targ.getAttribute('data-file')+'.mp4';
-			video.src = targ.getAttribute('data-file')+'.mp4';
-			temp=temp.replace("videos","videos_2"); 
-			//connection.send("control " + targ.getAttribute('data-file')+'.mp4');
-			connection.send("control " + temp);
-			$_("#controller").innerHTML="Channel "+  targ.getAttribute('data-file');
+			if(isCurVideoFlag!=temp)
+			{
+				// reset value flag ready
+				isAllReadyFlag=0;
+				isCurVideoFlag=temp;
+				video.src = targ.getAttribute('data-file')+'.mp4';
+				temp=temp.replace("videos","videos_2"); 
+				//connection.send("control " + targ.getAttribute('data-file')+'.mp4');
+				connection.send("control " + temp);
+				$_("#controller").innerHTML="Channel "+  targ.getAttribute('data-file');
+				
+				
+				//alert("source" + v.src);
+				video.load();
+				/* small kludge to force video element to fire the "paused" event correctly and change the play/pause button */
+			}else{
+				alert("The same current video is playing or loaded");
+			}
 			
-			
-			//alert("source" + v.src);
-			video.load();
-			/* small kludge to force video element to fire the "paused" event correctly and change the play/pause button */
 		},true);
 	}
 	
