@@ -3,7 +3,18 @@
 	 <head>
 <title>Controller</title>
 <!-- kinesis stylesheet -->
+<meta charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="http://cdn.kinesis.io/kinesis.css">
+	
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+	<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+	<script src="/resources/demos/external/jquery.bgiframe-2.1.2.js"></script>
+	<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+	<link rel="stylesheet" href="/resources/demos/style.css">
+	
+	
+
+	
 <style>
   .inactive { display: none; }
   .active { display: block; }
@@ -111,16 +122,17 @@ video {
 small { font-size: 0.5em; }
   
 </style>
-</head>
+
+
+
 <script>
 
 	"use strict";
 	var controller = null;
+
+	
+	
 	window.onload = function() {
-
-	
-
-	
 	
     var connection = new WebSocket('ws://localhost:8888');
 	if (connection == null)
@@ -168,6 +180,14 @@ small { font-size: 0.5em; }
     }, true);
 	
 	
+	function resetTimer(){
+	//alert("da chay");
+		window.clearInterval(myTimer);
+		window.clearTimeout(myTimeout);
+	};
+	
+	
+	
 	
     video.addEventListener("pause", function() {
 		// Delete the time interval when video stop
@@ -188,6 +208,7 @@ small { font-size: 0.5em; }
 	video.addEventListener("canplay", function() {
 		connection.send("canplay "+video.currentTime);
     }, true);
+	
 	
 	    // most important part - incoming messages
     connection.onmessage = function (message) {
@@ -238,7 +259,7 @@ small { font-size: 0.5em; }
 		
 			isAllReadyFlag=parseInt(matches[1]);
 			//numberUserReady=parseInt(matches[1]);
-			alert("It's ready to start broadcasting"+isAllReadyFlag);
+			//alert("It's ready to start broadcasting"+isAllReadyFlag);
 			break;
 		case "pause":
 			video.currentTime = parseInt(matches[1]);
@@ -281,6 +302,7 @@ small { font-size: 0.5em; }
 			if(isCurVideoFlag!=temp)
 			{
 				// reset value flag ready
+				resetTimer();
 				isAllReadyFlag=0;
 				isCurVideoFlag=temp;
 				video.src = targ.getAttribute('data-file')+'.mp4';
@@ -294,7 +316,19 @@ small { font-size: 0.5em; }
 				video.load();
 				/* small kludge to force video element to fire the "paused" event correctly and change the play/pause button */
 			}else{
-				alert("The same current video is playing or loaded");
+				var al = window.open('The same current video is playing or loaded', 'test'); 
+				window.setTimeout(function() {al.close()}, 2000);
+				
+				//$("#dialog" ).dialog("open");
+				
+				//setTimeout(function(){$_("#dialog").dialog("close")},2000);
+				
+				//alert("The same current video is playing or loaded");
+				
+				
+				
+				
+				
 			}
 			
 		},true);
@@ -320,12 +354,18 @@ small { font-size: 0.5em; }
 
 function $_(sel) {
   return document.querySelector(sel);
-}
+};
+
 
 
 </script>
 
+
+
+</head>
+
 <body>
+
 <div id="room" class="active">
  
   <p>Channel Controller: <span id="controller">---</span></p>
@@ -333,6 +373,9 @@ function $_(sel) {
   <p><video id="video" src="videos/windowsill.mp4" controls="controls" autobuffer="true"></video></p>
 </div>
 
+<div id="dialog" title="Basic dialog">
+	
+</div>
 
 
 <ul id="chooser">
@@ -366,26 +409,44 @@ $(function(){
 // delegate method for swipe gesture call to action; depending upon the gesture corresponding functions are fired.
 
 function swipeControl(gesture) {
+	
   switch(gesture){
     case leftGesture:
-	//alert("qua trai"+gesture);
+		video.play();
+		//alert("qua trai"+isAllReadyFlag);
       //$('#video').play();
-	  video.play();
+	/*	if(isAllReadyFlag>0){
+			//connection.send("timestamp " + video.currentTime);
+			//alert("It's okay to play due to all players are ready");
+			video.play();
+		}
+		else{
+			alert("Not ready for all users");
+		}
+	  */
       break;
-    case rightGesture:
+    /*case rightGesture:
 	//alert("qua phai");
       //$('#video').pause();
 	  video.pause();
-      break;
+      break;*/
   }
 };
 
 function movement(position){
-	if(position.z < -0.4)
-        video.pause();
+	if(position.z < -0.4){
+		//resetTimer();    
+		video.pause();
+	}
           
-    if(position.z > 0)
-        video.play();
+    if(position.z > 0){
+		if(isAllReadyFlag>0){
+			video.play();
+		 }
+		else{
+			alert("Not ready for all users");
+		}
+	}
 }
 
 
