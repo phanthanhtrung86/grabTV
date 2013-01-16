@@ -1,52 +1,22 @@
 # Welcome
 
-Metro UI CSS a set of styles to create a site with an interface similar to Windows 8 Metro UI. This set of styles was developed as a self-contained solution.
+This is a semester project: Grab your favourite Tv and share it. This project is supervised by Assistant Prof. Raphael Troncy (Eurecom) and Ph.D students.
 
 ### Version model
 x.x.x.x
 
-1) Major number
+1) HTML rendering source server
 
-2) Version of CSS
+2) Broadcast controller
 
-3) Version of JS
+3) Client(s)
 
-4) Fix
+4) Websocket server
 
-# Current Version
 
-## 0.15.8.11
+# Eurecom
 
-See details of definition on [metroui.org.ua](http://metroui.org.ua)
-
-# Team
-
-## Sergey Pimenov
-Kiev, Ukraine.
-Project owner, team leader.
-CSS/LESS, HTML, Javascript.
-
-## Sergey Volkov
-Voljskiy, Russia.
-Team member.
-Javascript.
-
-# Pull requests
-
-Please create pull requests for develop branch. Requests in master branch can be ignored.
-
-# Credits
-
-Metro UI CSS now is a Microsoft BizSpark Startup
-
-Normalize.css is a project by Nicolas Gallagher and Jonathan Neal.
-
-Sites and Projects with Metro UI CSS:
-
-* [forecast.org.ua](http://forecast.org.ua).
-* [pimenov.org.ua](http://pimenov.org.ua)
 
 ## Special thanks
 
-* [@oazabir](https://github.com/oazabir)
-* [@sagarsane](https://github.com/sagarsane)
+Assistant Prof. Raphael Troncy, Ph.D. student Jose Luis Redondo Garcia and Ph.D. student Giuseppe Rizzo
