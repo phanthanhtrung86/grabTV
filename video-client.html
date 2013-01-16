@@ -1,304 +1,273 @@
-<!-- This is a Node+WebSocket powered demo to sync videos
-     across different browsers. This file is the client,
-     the other one is the Node server. Powered by Node and
-     http://github.com/miksago/node-websocket-server -->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
-<title>Client</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="description" content="Modern UI CSS">
+    <meta name="author" content="Sergey Pimenov">
+    <meta name="keywords" content="windows 8, modern style, modern ui, style, modern, css, framework">
 
+    <link href="css/modern.css" rel="stylesheet">
+    <link href="css/theme-dark.css" rel="stylesheet">
+    <link href="css/modern-responsive.css" rel="stylesheet">
 
-<style>
-  .inactive { display: none; }
-  .active { display: block; }
-  
-  @font-face {
-	/* typeface: Xenon2 http://www.splintered.co.uk/experiments/61/ */
-	font-family: "Xenon2";
-	src: url(xenon2.ttf);
-}
+    <script src="public/js/assets/jquery-1.8.2.min.js"></script>
+    <script src="public/js/assets/google-analytics.js"></script>
+    <script src="public/js/assets/jquery.mousewheel.min.js"></script>
+    <script src="public/js/assets/github.info.js"></script>
+    <script src="public/js/modern/tile-slider.js"></script>
+    <script src="public/js/modern/tile-drag.js"></script>
 
-html { background: #eee; }
-h1 { font-size: 0.7em; margin: 0; padding: 0; }
+    <title>Modern UI CSS</title>
 
-body {
-	background: #eee;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 0.9em;
-	line-height: 1.2;
-	color: #222;
-	padding: 0; margin: 0.25em;
-}
+    <style>
+        body {
+            background: #1d1d1d;
+        }
+    </style>
 
-a { color: #227; }
+    <script>
+        function Resize(){
+            var tiles_area = 0;
+            $(".tile-group").each(function(){
+                tiles_area += $(this).outerWidth() + 80;
 
-small { font-size: 0.75em; }
+            });
 
-video {
-	display: block; /* styling shim for older browsers */
-	border: 5px #ddd solid;
-	border-radius: 5px;
-}
+            $(".tiles").css("width", 120 + tiles_area + 20);
 
-#controls {
-	position: absolute;
-	bottom: 20px;
-	left: 113px;
-	border-radius: 5px;
-	border: 1px #333 solid;
-	background: #000 url(gradient.png) repeat-x top left;
-	width: 200px;
-	height: 31px;
-	opacity: 0.3;
-	-o-transition: all 0.5s ease-in-out;
-	-webkit-transition: all 0.5s ease-in-out;
-	-moz-transition: all 0.5s ease-in-out;
-	transition: all 0.5s ease-in-out;
-}
+            $(".page").css({
+                height: $(document).height() - 20,
+                width: $(document).width()
+            });
+        }
 
-#controls:hover { 
-	border-color: #555;
-	opacity: 0.85;
-}
+        function AddMouseWheel(){
+            $("body").mousewheel(function(event, delta){
+                var scroll_value = delta * 50;
+                if (jQuery.browser.webkit) {
+                    this.scrollLeft -= scroll_value;
+                } else {
+                    document.documentElement.scrollLeft -= scroll_value;
+                }
+                return false;
+            });
+        }
 
-#controls button {
-	position: absolute;
-	top: 8px;
-	left: 8px;
-	width: 15px;
-	height: 15px;
-	padding: 0;
-	margin: 0;
-	border: none;
-	background: transparent;
-}
-
-#controls #display {
-	position: absolute;
-	top: 6px;
-	left: 45px;
-	padding: 0;
-	margin: 0;
-	color: #fff;
-	font-family: "Xenon2", sans-serif;
-	font-size: 16px;
-}
-
-#controls #volume {
-	position: absolute;
-	top: 6px;
-	right: 8px;
-	width: 50px;
-	height: 15px;
-}
-
-#controls #volumeicon {
-	position: absolute;
-	top: 8px;
-	right: 62px;
-}
-
-#chooser, #chooser li { list-style: none; margin: 0; padding: 0; }
-#chooser { margin-top: 1em; }
-#chooser li { float: left; }
-#chooser button { background: none; border: none; margin: 0 4px; padding: 0;
-	opacity: 0.5; 	
-	-o-transition: all 0.3s ease-in-out;
-	-webkit-transition: all 0.3s ease-in-out;
-	-moz-transition: all 0.3s ease-in-out;
-	transition: all 0.3s ease-in-out;
-}
-#chooser button:focus, #chooser button:hover { opacity: 1; }
-
-#credits { clear:left; padding: 0.25em 0 0 0; }
-#credits p { margin: 0; padding: 0; }
-small { font-size: 0.5em; }
-  
-  
-  
-  
-</style>
-</head>
-<script>
-
-	"use strict";
-	var controller = null;
-	var isAllReadyFlag=false;
-	var threshold=400;
-	window.onload = function() {
-
-    var connection = new WebSocket('ws://localhost:8888');
-	if (connection == null)
-		alert("Message is sent null..."+connection);
-    connection.onopen = function () {  
-		//alert("open..."+connection);
-	};
-	
-	connection.onerror = function (error) {
-        // just in there were some problems with conenction...
-        alert("error.."+error.toString());
-    };
-	
-
-    var video = $_("video");
-	var userCount;
-    video.addEventListener("timeupdate", function() {
-    }, true);
-	
-    video.addEventListener("pause", function() {
-    }, true);
-	
-	/*
-	// this event will be called during video is buffering the data- Chrome can not run the event progress
-	video.addEventListener("progress",function(e){
-		//alert("progress");
-		//if(e.total && e.loaded)
-		{
-           // percentage of video loaded
-          var proportion = Math.round( e.loaded / e.total );
-          container.insertBefore(" "+(proportion * 100), container.firstChild);
-		}
-	},true);
-*/
-
-	// Script to be run when the media actually has enough buffer
-	video.addEventListener("canplay", function() {
-		connection.send("canplay "+video.currentTime);
-    }, true);
+        $(function(){
+            Resize();
+            AddMouseWheel();
+        })
+    </script>
 	
 	
 	
-	    // most important part - incoming messages
-		//alert("Message is sent...");
-	var container = document.getElementById('myList');
- 
-    connection.onmessage = function (message) {
-		  
-		 var matches;
-		matches = message.data.split(/\s/g);
-		//alert("Message is sent..."+matches[0]);
-		// write the log into the list on screen
-		// Create a new <li> element for to insert inside <ul id="myList">
-		var new_element = document.createElement('li');
-		//new_element.innerHTML = matches[0]+matches[1];
-		new_element.innerHTML = message.data;
+	<script>
+		"use strict";
+		var controller = null;
+		var isAllReadyFlag=false;
+		var threshold=400;
+		window.onload = function() {
+
+		var connection = new WebSocket('ws://localhost:8888');
+		if (connection == null)
+			alert("Message is sent null..."+connection);
+		connection.onopen = function () {  
+		};
 		
-		container.insertBefore(new_element, container.firstChild);
-	
-		switch (matches[0]){
-		case "control":
-			$_("#controller").innerHTML = matches[1];
+		connection.onerror = function (error) {
+			// just in there were some problems with conenction...
+			alert("error.."+error.toString());
+		};
+		
+		var video = $_("video");
+		var userCount;
+		video.addEventListener("timeupdate", function() {
+		}, true);
+		
+		video.addEventListener("pause", function() {
+		}, true);
+		
+		// Script to be run when the media actually has enough buffer
+		video.addEventListener("canplay", function() {
+			connection.send("canplay "+video.currentTime);
+		}, true);
+		var container = document.getElementById('myList');
+	 
+		connection.onmessage = function (message) {  
+		
+			var matches;
+			matches = message.data.split(/\s/g);
 			
-			video.src = matches[1];
-			//video.src="http://content.bitsontherun.com/videos/q1fx20VZ-52qL9xLP.mp4";
-			video.load();
-			progressUpdate(true);
-			
-			//alert("haha"+video.src);
-			break;
-			
-		case "userCount":
-			userCount=parseInt(matches[1]);
-			document.getElementById("userCount").innerHTML = matches[1];
-			break;
-		case "pause":
-			video.pause();
-			video.currentTime = matches[1];
-			break;
-		/*case "isAllReady":
-			isAllReadyFlag=parseInt(matches[1]);
-			break;	
-		case "seeked":
-			video.currentTime = matches[1];
-			video.play();
-			//alert("paused.."+matches[1]);
-			break;	*/
-		case "timestamp":
-			var estimatedTimeOnMaster = parseInt(matches[1]);
-			//video.currentTime = estimatedTimeOnMaster;
-			if (Math.abs(estimatedTimeOnMaster-video.currentTime)>threshold)
-			  video.currentTime = estimatedTimeOnMaster;
-			  
-			if (video.paused){
-				video.play();
+			var new_element = document.createElement('li');
+			var bg_color="bg-color-pinkDark fg-color-white";
+			var img_src="images/timestamp_icon.jpg";
+			switch (matches[0]){
+				case "control":
+					bg_color="bg-color-pink fg-color-white";
+					var img_src="images/controller_icon.jpg";
+					break;	
+				case "userCount":
+					bg_color="bg-color-blue fg-color-white";
+					var img_src="images/count_icon.jpg";
+					break;
+				case "pause":
+					bg_color="bg-color-green fg-color-white";
+					var img_src="images/pause_icon.jpg";
+					break;
+				case "timestamp":
+					bg_color="bg-color-red fg-color-white";
+					var img_src="images/timestamp_icon.jpg";
+					break;
 			}
-			break;
-		}
-	  };
-	
-	
-};
-
-
-function $_(sel) {
-  return document.querySelector(sel);
-}
-
-/*
-    var tag = document.getElementById("video");
-    var update = false;
-    //tag.addEventListener("progress",eventProgress, true);
-    tag.addEventListener('waiting',eventWaiting);
-    tag.addEventListener('stalled',eventStalled);
-    tag.addEventListener('suspend',eventSuspend);
-    function appendLog(text) {
-        
-		container.insertBefore(text, container.firstChild);
-    };
-    
-    function getBuffered() {
-        appendLog("Buffered: " + getBufferedRange());
-    };
-    function getBufferedRange() {
-        var range = '-';
-        if(tag.buffered.length) {
-            range = '';
-            for (var i=0; i<tag.buffered.length; i++) { 
-                range += Math.round(tag.buffered.start(i)) +  "s-" +
-                    Math.round(tag.buffered.end(i)) + "s";
-                if(i<tag.buffered.length-1) { range +=", "; }
-            }
-        }
-        return range;
-    };
-    function eventProgress() {
-		alert("Beginning update");
-        if(update) {
-            appendLog("Progress event fired (buffered="+getBufferedRange()+")");
-        }
-    };
-	
-	
-	video.addEventListener("progress",function(e){
-		alert("progress");
-		if(true) {
-            appendLog("Progress event fired (buffered="+getBufferedRange()+")");
-        }
-	},true);
-	
-	
-    function eventWaiting() {
-        appendLog("Waiting event fired (buffered="+getBufferedRange()+")");
-    };
-    function eventStalled() {
-        appendLog("Stalled event fired (buffered="+getBufferedRange()+")");
-    };
-    function eventSuspend() {
-        appendLog("Suspend event fired (buffered="+getBufferedRange()+")");
-    };
-    function progressUpdate(state) {
-		
-        update = state;
-    };*/
+			
+			
+			
+			
+			
+			var main_content=matches[1];
+			
+			switch (matches[0]){
+				case "control":
+					$_("#controller").innerHTML = matches[1];
+					video.src = matches[1];
+					video.load();
+					progressUpdate(true);
+					break;	
+				case "userCount":
+					userCount=parseInt(matches[1]);
+					document.getElementById("userCount").innerHTML = matches[1];
+					break;
+				case "pause":
+					video.pause();
+					video.currentTime = matches[1];
+					break;
+				case "timestamp":
+					var estimatedTimeOnMaster = parseInt(matches[1]);
+					//video.currentTime = estimatedTimeOnMaster;
+					var curTime=video.currentTime;
+					if (Math.abs(estimatedTimeOnMaster-curTime)>threshold){
+						video.currentTime = estimatedTimeOnMaster;
+						main_content="Master:"+estimatedTimeOnMaster+" Cur:"+curTime+" Threshold: "+threshold +" NotSync - Sync";
+					}else{
+						main_content="Master:"+estimatedTimeOnMaster+" Cur:"+curTime+" Threshold: "+threshold +" Sync - Sync";
+					}
+					if (video.paused){
+						video.play();
+					}
+					break;
+			}
+			new_element.setAttribute("class",bg_color);
+				
+			var div1=document.createElement('div');
+			div1.setAttribute("class","icon");
+			var image1=document.createElement('img');
+			image1.setAttribute("src",img_src);
+			div1.appendChild(image1);
+			
+			var div2=document.createElement('div');
+			div2.setAttribute("class","data");
+			var header4=document.createElement('h4');
+			header4.setAttribute("class","fg-color-white");
+			
+			header4.innerHTML=matches[0];
+			div2.appendChild(header4);
+			
+			var para=document.createElement('p');
+			para.innerHTML=main_content;
+			div2.appendChild(para);
+			
+			
+			new_element.appendChild(div1);
+			new_element.appendChild(div2);
+			
+			container.insertBefore(new_element, container.firstChild);
+		  };
+	};
+	function $_(sel) {
+	  return document.querySelector(sel);
+	}
 </script>
 
-<div id="room" class="active">
- 
-  <p>Channel Controller: <span id="controller">---</span></p>
-  <p>Users: <span id="userCount"></span></p>
-  <p><video  id="video" src="videos/windowsill.mp4" controls="controls" preload="none" autobuffer="true"></video></p>
-  <ul id="myList">
-  </ul>
+</head>
+<body class="modern-ui" onresize="Resize()">
+<div class="page secondary fixed-header">
+    <div class="page-header ">
+        <div class="page-header-content">
+            <div class="user-login">
+                <a href="#">
+                    <div class="name">
+                        <span class="first-name">NGUYEN</span>
+                        <span class="last-name">Steven</span>
+                    </div>
+                    <div class="avatar">
+                        <img src="images/steven_avatar.jpg"/>
+                    </div>
+                </a>
+            </div>
+
+            <h1>Client</h1>
+        </div>
+    </div>
+
+    <div class="page-region">
+        <div class="page-region-content tiles">
+            <div class="tile-group tile-drag">
+				<div class="tile-group">
+					<div>
+					<p>Channel Controller: <span id="controller">---</span></p>
+					</div>
+					<p>Users Count: <span id="userCount"></span></p>
+				</div>
+			
+			
+                <div  style="width: 318px; height: 318px;"  class="tile video outline-color-green">   
+                    <div >
+                        <video style="width: 318px; height: 318px;"  id="video" src="videos/windowsill.mp4" controls="controls" autobuffer="true"></video>
+                    </div>
+                </div>
+	
+				<div  class="tile double bg-color-orange" style="height:380px; width:350px;">
+                    <ul id="myList" class="listview">
+                        
+                    </ul>
+                </div>
+            </div>
+
+           
+
+         
+           
+
+          
+            
+        </div>
+    </div>
 </div>
+<a href='http://hit.ua/?x=19154' target='_blank'>
+    <script language="javascript" type="text/javascript"><!--
+    Cd=document;Cr="&"+Math.random();Cp="&s=1";
+    Cd.cookie="b=b";if(Cd.cookie)Cp+="&c=1";
+    Cp+="&t="+(new Date()).getTimezoneOffset();
+    if(self!=top)Cp+="&f=1";
+    //--></script>
+    <script language="javascript1.1" type="text/javascript"><!--
+    if(navigator.javaEnabled())Cp+="&j=1";
+    //--></script>
+    <script language="javascript1.2" type="text/javascript"><!--
+    if(typeof(screen)!='undefined')Cp+="&w="+screen.width+"&h="+
+            screen.height+"&d="+(screen.colorDepth?screen.colorDepth:screen.pixelDepth);
+    //--></script>
+    <script language="javascript" type="text/javascript"><!--
+    Cd.write("<img src='http://c.hit.ua/hit?i=19154&g=0&x=2"+Cp+Cr+
+            "&r="+escape(Cd.referrer)+"&u="+escape(window.location.href)+
+            "' border='0' wi"+"dth='1' he"+"ight='1'/>");
+    //--></script>
+    <noscript>
+        <img src='http://c.hit.ua/hit?i=19154&amp;g=0&amp;x=2' border='0'/>
+    </noscript></a>
+<!-- / hit.ua -->
 
-
-
-
+</body>
+</html>
