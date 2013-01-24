@@ -72,7 +72,7 @@
 		var controller = null;
 		var isAllReadyFlag=false;
 		var threshold=400;
-		var para="";
+		var para=" ";
 		window.onload = function() {
 
 		var connection = new WebSocket('ws://localhost:8888');
@@ -103,7 +103,15 @@
 		connection.onmessage = function (message) {  
 		
 			var matches;
+			
 			matches = message.data.split(/\s/g);
+			
+			
+			
+			//alert("hahahahah "+test);
+			
+			
+			
 			
 			var new_element = document.createElement('li');
 			var bg_color="bg-color-pinkDark fg-color-white";
@@ -151,12 +159,15 @@
 					video.currentTime = matches[1];
 					break;
 				case "summary":
-					alert(matches)
-					alert(matches[2])
+					//alert(matches)
+					//alert(matches[2])
+					//alert(para);
+					for(var index=1;index<matches.length;index++){
+						para+=" "+matches[index];
+					}
 					
-					
-					para = matches;
-					document.getElementById("summary").innerHTML = matches[1];
+					//para = matches;
+					document.getElementById("summary").innerHTML = para;
 					break;
 				case "timestamp":
 					//alert(""+matches[1]);
@@ -196,9 +207,9 @@
 			header4.innerHTML=matches[0];
 			div2.appendChild(header4);
 			
-			var para=document.createElement('p');
-			para.innerHTML=main_content;
-			div2.appendChild(para);
+			var paragraph=document.createElement('p');
+			paragraph.innerHTML=main_content;
+			div2.appendChild(paragraph);
 			
 			
 			new_element.appendChild(div1);

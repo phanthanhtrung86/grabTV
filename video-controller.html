@@ -156,7 +156,7 @@
 						temp=temp.replace("videos","videos_2"); 
 						connection.send("control " + temp);
 						connection.send("summary " + para);
-						alert(para);
+						//alert(para);
 						$_("#controller").innerHTML="Channel "+  targ.getAttribute('data-file');
 						video.load();
 						/* small kludge to force video element to fire the "paused" event correctly and change the play/pause button */
