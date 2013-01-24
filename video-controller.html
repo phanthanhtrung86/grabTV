@@ -53,6 +53,7 @@
 	<script>
 		"use strict";
 		var controller = null;
+		var para="";
 		window.onload = function() {
 		
 			var connection = new WebSocket('ws://localhost:8888');
@@ -70,6 +71,7 @@
 			var myTimer;
 			var myTimeout;
 			var video = $_("video");
+			
 
 			video.addEventListener("playing", function() {
 				// the function set interval will replace for timeupdate
@@ -116,7 +118,8 @@
 						break;
 					case "userCount":
 						userCount= parseInt(matches[1]);
-						document.getElementById("userCount").innerHTML = matches[1];
+						userCount=userCount-1;
+						document.getElementById("userCount").innerHTML = userCount;
 						break;
 					case "isAllReady":			
 						isAllReadyFlag=parseInt(matches[1]);
@@ -152,6 +155,8 @@
 						video.src = targ.getAttribute('data-file')+'.mp4';
 						temp=temp.replace("videos","videos_2"); 
 						connection.send("control " + temp);
+						connection.send("summary " + para);
+						alert(para);
 						$_("#controller").innerHTML="Channel "+  targ.getAttribute('data-file');
 						video.load();
 						/* small kludge to force video element to fire the "paused" event correctly and change the play/pause button */
@@ -206,7 +211,7 @@
 			var temp = targ.getAttribute('data-file');
 				
 			var header2=temp;
-			var para="";
+			
 			var header5="";
 			
 			switch(temp){
@@ -325,10 +330,9 @@
                         <p id="para" >
                             Congratulations! I'm really excited to celebrate with you all. Thanks for...
                         </p>
-                    </div>
-					
-                   
+                    </div>   
                 </div>
+				
 			</div>
         </div>
     </div>

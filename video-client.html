@@ -72,6 +72,7 @@
 		var controller = null;
 		var isAllReadyFlag=false;
 		var threshold=400;
+		var para="";
 		window.onload = function() {
 
 		var connection = new WebSocket('ws://localhost:8888');
@@ -117,13 +118,14 @@
 					var img_src="images/count_icon.jpg";
 					break;
 				case "pause":
-					bg_color="bg-color-green fg-color-white";
+					bg_color="bg-color-red fg-color-white";
 					var img_src="images/pause_icon.jpg";
 					break;
 				case "timestamp":
-					bg_color="bg-color-red fg-color-white";
+					bg_color="bg-color-green fg-color-white";
 					var img_src="images/timestamp_icon.jpg";
 					break;
+				
 			}
 			
 			
@@ -141,11 +143,20 @@
 					break;	
 				case "userCount":
 					userCount=parseInt(matches[1]);
-					document.getElementById("userCount").innerHTML = matches[1];
+					userCount=userCount-1;
+					document.getElementById("userCount").innerHTML = userCount;
 					break;
 				case "pause":
 					video.pause();
 					video.currentTime = matches[1];
+					break;
+				case "summary":
+					alert(matches)
+					alert(matches[2])
+					
+					
+					para = matches;
+					document.getElementById("summary").innerHTML = matches[1];
 					break;
 				case "timestamp":
 					//alert(""+matches[1]);
@@ -167,9 +178,10 @@
 					break;
 			}
 			new_element.setAttribute("class",bg_color);
-				new_element.setAttribute("display","inline-block");
 			
-			
+			new_element.setAttribute("style","height:80px; width:100%;display:inline-block;");
+			//list-style-type:none;
+					
 			var div1=document.createElement('div');
 			div1.setAttribute("class","icon");
 			var image1=document.createElement('img');
@@ -191,6 +203,7 @@
 			
 			new_element.appendChild(div1);
 			new_element.appendChild(div2);
+			new_element.setAttribute("float","left");
 			
 			container.insertBefore(new_element, container.firstChild);
 		  };
@@ -240,17 +253,27 @@
                         <video style="width: 318px; height: 318px;"  id="video" src="videos/windowsill.mp4" controls="controls" autobuffer="true"></video>
                     </div>
                 </div>
+				
+				
+				<div id="detailinfo" class="tile double bg-color-green" style="width: 318px; height: 318px;" data-role="tile-slider" data-param-period="2000">
+                    <div class="tile-content">
+                        <h2 id="header2" >Channel Summary</h2>
+                        <p id="summary" >
+                            ----
+                        </p>
+                    </div>   
+                </div>
 	
-				<div  class="tile double bg-color-orange" style="height:380px; width:350px;overflow:auto;">
+	
+				
+	
+	
+				<div  class="tile double bg-color-orange" style="height:400px; width:700px;overflow:auto;">
                     <ul id="myList" class="listview" style="overflow:auto;">
                         
                     </ul>
                 </div>
-				<div  class="tile double " style="height: 120px;width: 680px;">
-				  
-						
-	
-				</div>  
+				
             </div>  
         </div>
     </div>

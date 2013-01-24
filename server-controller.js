@@ -92,6 +92,14 @@ wsServer.on('request', function (request) {
 				
 				}
 		}
+		
+		if(matches[0]=="summary"){
+			for (var i=0; i < clients.length; i++) {  
+				clients[i].send(message.utf8Data); 
+				console.log("Client "+ i + ": "+ message.utf8Data);
+				
+				}
+		}
 		if(matches[0]=="pause"){
 			for (var i=0; i < clients.length; i++) {  
 				clients[i].send(message.utf8Data); 
