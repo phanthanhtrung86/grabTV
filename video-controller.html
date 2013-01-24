@@ -150,13 +150,14 @@
 						isAllReadyFlag=0;
 						isCurVideoFlag=temp;
 						var test=targ.getAttribute('data-file');
-						video.src = getLink(test);
-						//autobuffer=true
-						video.setAttribute("autobuffer","true");
+						
 						//video.src = targ.getAttribute('data-file')+'.mp4';
 						//temp=temp.replace("videos","videos_2"); 
 						//alert(test);
 						connection.send("control " + test);
+						video.src = getLink(test);
+						//autobuffer=true
+						video.setAttribute("autobuffer","true");
 						connection.send("summary " + para);
 						//alert(para);
 						$_("#controller").innerHTML="Channel "+  targ.getAttribute('data-file');

@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html>
 <head>
     <meta charset="utf-8">
     
@@ -22,7 +22,7 @@
 	
 	
 	
-    <title>Modern UI CSS</title>
+    <title>Client</title>
 
     <style>
         body {
@@ -174,6 +174,7 @@
 						//video.src = matches[1];
 						video.src = link;
 						video.load();
+						video.setAttribute("autobuffer","true");
 						//progressUpdate(true);
 						break;	
 					case "userCount":
@@ -196,7 +197,7 @@
 						
 						//para = matches;
 						//document.getElementById("summary").value=" ";
-						document.getElementById("summary").value = para;
+						document.getElementById("summary").innerHTML = para;
 						break;
 					case "timestamp":
 						//alert(""+matches[1]);
@@ -219,7 +220,7 @@
 				}
 				new_element.setAttribute("class",bg_color);
 				
-				new_element.setAttribute("style","height:80px; width:100%;display:inline-block;");
+				new_element.setAttribute("style","height:80px; width:600px;display:inline-block;");
 				//list-style-type:none;
 						
 				var div1=document.createElement('div');
@@ -265,7 +266,7 @@
                         <span class="last-name">Steven</span>
                     </div>
                     <div class="avatar">
-                        <img src="images/steven_avatar.jpg"/>
+                        <img src="images/steven_avatar.jpg" alt="client avatar"/>
                     </div>
                 </a>
             </div>
@@ -280,17 +281,17 @@
 				
 			
 				
-				<div class="tile  bg-color-blueDark" style="height: 100%;width: 680px;">
+				<div class="tile  bg-color-blueDark" style="height: 100%;width: 646px;">
                     <div class="tile-content">
                        
                         <h4><span>Current broadcasting channel </span></h4>
                         <h3><span id="controller">---</span></h3>
-						<h4><p>Total User Count: <span id="userCount"></span></p></h4>
+						<p>Total User Count: <span id="userCount"></span></p>
                     </div>
                 </div>
                 <div  style="width: 318px; height: 318px;"  class="tile video outline-color-green">   
                     <div >
-                        <video style="width: 318px; height: 318px;"  id="video" src="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/3/raw.mp4" controls="controls" preload="True" autobuffer="true"></video>
+                        <video style="width: 318px; height: 318px;"  id="video" src="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/3/raw.mp4" controls="controls" autoplay="true" ></video>
                     </div>
                 </div>
 				
@@ -303,12 +304,8 @@
                         </h4>
                     </div>   
                 </div>
-	
-	
-				
-	
-	
-				<div  class="tile double bg-color-orange" style="height:400px; width:700px;overflow:auto;">
+
+				<div  class="tile double bg-color-orange" style="height:400px; width:646px;overflow:auto;">
                     <ul id="myList" class="listview" style="overflow:auto;">
                         
                     </ul>
@@ -318,29 +315,7 @@
         </div>
     </div>
 </div>
-<a href='http://hit.ua/?x=19154' target='_blank'>
-    <script language="javascript" type="text/javascript"><!--
-    Cd=document;Cr="&"+Math.random();Cp="&s=1";
-    Cd.cookie="b=b";if(Cd.cookie)Cp+="&c=1";
-    Cp+="&t="+(new Date()).getTimezoneOffset();
-    if(self!=top)Cp+="&f=1";
-    //--></script>
-    <script language="javascript1.1" type="text/javascript"><!--
-    if(navigator.javaEnabled())Cp+="&j=1";
-    //--></script>
-    <script language="javascript1.2" type="text/javascript"><!--
-    if(typeof(screen)!='undefined')Cp+="&w="+screen.width+"&h="+
-            screen.height+"&d="+(screen.colorDepth?screen.colorDepth:screen.pixelDepth);
-    //--></script>
-    <script language="javascript" type="text/javascript"><!--
-    Cd.write("<img src='http://c.hit.ua/hit?i=19154&g=0&x=2"+Cp+Cr+
-            "&r="+escape(Cd.referrer)+"&u="+escape(window.location.href)+
-            "' border='0' wi"+"dth='1' he"+"ight='1'/>");
-    //--></script>
-    <noscript>
-        <img src='http://c.hit.ua/hit?i=19154&amp;g=0&amp;x=2' border='0'/>
-    </noscript></a>
-<!-- / hit.ua -->
+
 
 </body>
 </html>
