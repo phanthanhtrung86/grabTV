@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html >
 <head>
     <meta charset="utf-8">
    
@@ -151,6 +151,8 @@
 						isCurVideoFlag=temp;
 						var test=targ.getAttribute('data-file');
 						video.src = getLink(test);
+						//autobuffer=true
+						video.setAttribute("autobuffer","true");
 						//video.src = targ.getAttribute('data-file')+'.mp4';
 						//temp=temp.replace("videos","videos_2"); 
 						//alert(test);
@@ -276,7 +278,7 @@
                         <span class="last-name">Trung</span>
                     </div>
                     <div class="avatar">
-                        <img src="images/trung_avatar.jpg"/>
+                        <img src="images/trung_avatar.jpg" alt="Avatar of Trung"/>
                     </div>
                 </a>
             </div>
@@ -313,7 +315,7 @@
                 </div>
 				 <div  style="width: 318px; height: 318px;"  class="tile video outline-color-green">
                     <div >
-                        <video style="width: 318px; height: 318px;"  id="video" src="videos/windowsill.mp4" controls="controls" autobuffer="true"></video>
+                        <video style="width: 318px; height: 318px;"  id="video" src="videos/windowsill.mp4" controls="controls" ></video>
                     </div>
                 </div>
 
@@ -323,7 +325,8 @@
                         <h3 style="margin-bottom: 5px;"> Channel Controller</h3>
                         <h4><span>Broadcasting </span></h4>
                         <h3><span id="controller">---</span></h3>
-						<h4><p>Total User Count: <span id="userCount"></span></p></h4>
+						<p>Total User Count: <span id="userCount"></span></p>
+
                     </div>
                 </div>
 	
