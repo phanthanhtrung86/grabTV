@@ -16,10 +16,9 @@
     <script src="public/js/modern/tile-slider.js"></script>
     <script src="public/js/modern/tile-drag.js"></script>
 
-	<link href="css/generic.css" rel="stylesheet" type="text/css" />
-    <link href="css/slider.css" rel="stylesheet" type="text/css" />
-    <script src="js/jquery-1.7.1.min.js" type="text/javascript"></script>
-    <script src="js/jquery-slider.js" type="text/javascript"></script>
+
+ 
+  
 	
 	
 	
@@ -75,149 +74,179 @@
 		var para=" ";
 		window.onload = function() {
 
-		var connection = new WebSocket('ws://localhost:8888');
-		if (connection == null)
-			alert("Message is sent null..."+connection);
-		connection.onopen = function () {  
-		};
-		
-		connection.onerror = function (error) {
-			// just in there were some problems with conenction...
-			alert("error.."+error.toString());
-		};
-		
-		var video = $_("video");
-		var userCount;
-		video.addEventListener("timeupdate", function() {
-		}, true);
-		
-		video.addEventListener("pause", function() {
-		}, true);
-		
-		// Script to be run when the media actually has enough buffer
-		video.addEventListener("canplay", function() {
-			connection.send("canplay "+video.currentTime);
-		}, true);
-		var container = document.getElementById('myList');
-	 
-		connection.onmessage = function (message) {  
-		
-			var matches;
+			var connection = new WebSocket('ws://localhost:8888');
+			if (connection == null)
+				alert("Message is sent null..."+connection);
+			connection.onopen = function () {  
+			};
 			
-			matches = message.data.split(/\s/g);
+			connection.onerror = function (error) {
+				// just in there were some problems with conenction...
+				alert("error.."+error.toString());
+			};
+			
+			var video = $_("video");
+			var userCount;
+			video.addEventListener("timeupdate", function() {
+			}, true);
+			
+			video.addEventListener("pause", function() {
+			}, true);
+			
+			// Script to be run when the media actually has enough buffer
 			
 			
-			
-			//alert("hahahahah "+test);
-			
-			
-			
-			
-			var new_element = document.createElement('li');
-			var bg_color="bg-color-pinkDark fg-color-white";
-			var img_src="images/timestamp_icon.jpg";
-			switch (matches[0]){
-				case "control":
-					bg_color="bg-color-pink fg-color-white";
-					var img_src="images/controller_icon.jpg";
-					break;	
-				case "userCount":
-					bg_color="bg-color-blue fg-color-white";
-					var img_src="images/count_icon.jpg";
-					break;
-				case "pause":
-					bg_color="bg-color-red fg-color-white";
-					var img_src="images/pause_icon.jpg";
-					break;
-				case "timestamp":
-					bg_color="bg-color-green fg-color-white";
-					var img_src="images/timestamp_icon.jpg";
-					break;
+			video.addEventListener("canplay", function() {
+				connection.send("canplay "+video.currentTime);
+			}, true);
 				
+			
+		
+		
+			var container = document.getElementById('myList');
+		 
+		 
+		 
+			function getLink(temp){
+				var link1="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/5/raw.mp4";
+				var link2="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/2/raw.mp4";
+				var link3="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/3/raw.mp4";
+				var link4="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/4/raw.mp4";
+				
+				switch(temp){
+					case "videos/garden1":
+						return link1;
+					case "videos/garden2":
+						return link2;
+					case "videos/fridge":
+						return link3;
+					case "videos/windowsill":
+						return link4;
+				}
 			}
-			
-			
-			
-			
-			
-			var main_content=matches[1];
-			
-			switch (matches[0]){
-				case "control":
-					$_("#controller").innerHTML = matches[1];
-					video.src = matches[1];
-					video.load();
-					progressUpdate(true);
-					break;	
-				case "userCount":
-					userCount=parseInt(matches[1]);
-					userCount=userCount-1;
-					document.getElementById("userCount").innerHTML = userCount;
-					break;
-				case "pause":
-					video.pause();
-					video.currentTime = matches[1];
-					break;
-				case "summary":
-					//alert(matches)
-					//alert(matches[2])
-					//alert(para);
-					for(var index=1;index<matches.length;index++){
-						para+=" "+matches[index];
-					}
+			connection.onmessage = function (message) {  
+		
+				var matches;
+				
+				matches = message.data.split(/\s/g);
+				
+				
+				
+				//alert("hahahahah "+test);
+				
+				
+				
+				
+				var new_element = document.createElement('li');
+				var bg_color="bg-color-pinkDark fg-color-white";
+				var img_src="images/timestamp_icon.jpg";
+				switch (matches[0]){
+					case "control":
+						bg_color="bg-color-pink fg-color-white";
+						var img_src="images/controller_icon.jpg";
+						break;	
+					case "userCount":
+						bg_color="bg-color-blue fg-color-white";
+						var img_src="images/count_icon.jpg";
+						break;
+					case "pause":
+						bg_color="bg-color-red fg-color-white";
+						var img_src="images/pause_icon.jpg";
+						break;
+					case "timestamp":
+						bg_color="bg-color-green fg-color-white";
+						var img_src="images/timestamp_icon.jpg";
+						break;
 					
-					//para = matches;
-					document.getElementById("summary").innerHTML = para;
-					break;
-				case "timestamp":
-					//alert(""+matches[1]);
-					var estimatedTimeOnMaster = (matches[1])*1000;
-					//video.currentTime = estimatedTimeOnMaster;
-					
-					//estimatedTimeOnMaster=estimatedTimeOnMaster*1000;
-					var curTime=video.currentTime*1000;
-					//curTime=curTime*1000;
-					if (Math.abs(estimatedTimeOnMaster-curTime)>threshold){
-						video.currentTime = estimatedTimeOnMaster;
-						main_content="Master:"+estimatedTimeOnMaster+" Cur:"+curTime+" Threshold: "+threshold +" NotSync - Sync";
-					}else{
-						main_content="Master:"+estimatedTimeOnMaster+" Cur:"+curTime+" Threshold: "+threshold +" Sync - Sync";
-					}
-					if (video.paused){
-						video.play();
-					}
-					break;
-			}
-			new_element.setAttribute("class",bg_color);
-			
-			new_element.setAttribute("style","height:80px; width:100%;display:inline-block;");
-			//list-style-type:none;
-					
-			var div1=document.createElement('div');
-			div1.setAttribute("class","icon");
-			var image1=document.createElement('img');
-			image1.setAttribute("src",img_src);
-			div1.appendChild(image1);
-			
-			var div2=document.createElement('div');
-			div2.setAttribute("class","data");
-			var header4=document.createElement('h4');
-			header4.setAttribute("class","fg-color-white");
-			
-			header4.innerHTML=matches[0];
-			div2.appendChild(header4);
-			
-			var paragraph=document.createElement('p');
-			paragraph.innerHTML=main_content;
-			div2.appendChild(paragraph);
-			
-			
-			new_element.appendChild(div1);
-			new_element.appendChild(div2);
-			new_element.setAttribute("float","left");
-			
-			container.insertBefore(new_element, container.firstChild);
-		  };
+				}
+				
+				
+				
+				
+				
+				var main_content=matches[1];
+				
+				switch (matches[0]){
+					case "control":
+						//alert(matches[1]);
+						$_("#controller").innerHTML = matches[1];
+						var link=getLink(matches[1]);
+						//video.src = matches[1];
+						video.src = link;
+						video.load();
+						//progressUpdate(true);
+						break;	
+					case "userCount":
+						userCount=parseInt(matches[1]);
+						userCount=userCount-1;
+						document.getElementById("userCount").innerHTML = userCount;
+						break;
+					case "pause":
+						video.pause();
+						video.currentTime = matches[1];
+						break;
+					case "summary":
+						//alert(matches)
+						//alert(matches[2])
+						//alert(para);
+						para="";
+						for(var index=1;index<matches.length;index++){
+							para+=" "+matches[index];
+						}
+						
+						//para = matches;
+						//document.getElementById("summary").value=" ";
+						document.getElementById("summary").value = para;
+						break;
+					case "timestamp":
+						//alert(""+matches[1]);
+						var estimatedTimeOnMaster = (matches[1])*1000;
+						//video.currentTime = estimatedTimeOnMaster;
+						
+						//estimatedTimeOnMaster=estimatedTimeOnMaster*1000;
+						var curTime=video.currentTime*1000;
+						//curTime=curTime*1000;
+						if (Math.abs(estimatedTimeOnMaster-curTime)>threshold){
+							video.currentTime = estimatedTimeOnMaster;
+							main_content="Master:"+estimatedTimeOnMaster+" Cur:"+curTime+" Threshold: "+threshold +" NotSync - Sync";
+						}else{
+							main_content="Master:"+estimatedTimeOnMaster+" Cur:"+curTime+" Threshold: "+threshold +" Sync - Sync";
+						}
+						if (video.paused){
+							video.play();
+						}
+						break;
+				}
+				new_element.setAttribute("class",bg_color);
+				
+				new_element.setAttribute("style","height:80px; width:100%;display:inline-block;");
+				//list-style-type:none;
+						
+				var div1=document.createElement('div');
+				div1.setAttribute("class","icon");
+				var image1=document.createElement('img');
+				image1.setAttribute("src",img_src);
+				div1.appendChild(image1);
+				
+				var div2=document.createElement('div');
+				div2.setAttribute("class","data");
+				var header4=document.createElement('h4');
+				header4.setAttribute("class","fg-color-white");
+				
+				header4.innerHTML=matches[0];
+				div2.appendChild(header4);
+				
+				var paragraph=document.createElement('p');
+				paragraph.innerHTML=main_content;
+				div2.appendChild(paragraph);
+				
+				
+				new_element.appendChild(div1);
+				new_element.appendChild(div2);
+				new_element.setAttribute("float","left");
+				
+				container.insertBefore(new_element, container.firstChild);
+			  };
 	};
 	function $_(sel) {
 	  return document.querySelector(sel);
@@ -251,7 +280,7 @@
 				
 			
 				
-			<div class="tile  bg-color-blueDark" style="height: 100%;width: 680px;">
+				<div class="tile  bg-color-blueDark" style="height: 100%;width: 680px;">
                     <div class="tile-content">
                        
                         <h4><span>Current broadcasting channel </span></h4>
@@ -261,7 +290,7 @@
                 </div>
                 <div  style="width: 318px; height: 318px;"  class="tile video outline-color-green">   
                     <div >
-                        <video style="width: 318px; height: 318px;"  id="video" src="videos/windowsill.mp4" controls="controls" autobuffer="true"></video>
+                        <video style="width: 318px; height: 318px;"  id="video" src="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/3/raw.mp4" controls="controls" preload="True" autobuffer="true"></video>
                     </div>
                 </div>
 				
@@ -269,9 +298,9 @@
 				<div id="detailinfo" class="tile double bg-color-green" style="width: 318px; height: 318px;" data-role="tile-slider" data-param-period="2000">
                     <div class="tile-content">
                         <h2 id="header2" >Channel Summary</h2>
-                        <p id="summary" >
+                        <h4 id="summary" >
                             ----
-                        </p>
+                        </h4>
                     </div>   
                 </div>
 	

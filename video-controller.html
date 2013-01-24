@@ -2,10 +2,7 @@
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, maximum-scale=1">
-    <meta name="description" content="Modern UI CSS">
-    <meta name="author" content="Sergey Pimenov">
-    <meta name="keywords" content="windows 8, modern style, modern ui, style, modern, css, framework">
+   
 
     <link href="public/css/modern.css" rel="stylesheet">
     <link href="public/css/theme-dark.css" rel="stylesheet">
@@ -39,7 +36,7 @@
 	
 	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
 	<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
-	<script src="/resources/demos/external/jquery.bgiframe-2.1.2.js"></script>
+
 	<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 	
 	
@@ -152,9 +149,12 @@
 						resetTimer();
 						isAllReadyFlag=0;
 						isCurVideoFlag=temp;
-						video.src = targ.getAttribute('data-file')+'.mp4';
-						temp=temp.replace("videos","videos_2"); 
-						connection.send("control " + temp);
+						var test=targ.getAttribute('data-file');
+						video.src = getLink(test);
+						//video.src = targ.getAttribute('data-file')+'.mp4';
+						//temp=temp.replace("videos","videos_2"); 
+						//alert(test);
+						connection.send("control " + test);
 						connection.send("summary " + para);
 						//alert(para);
 						$_("#controller").innerHTML="Channel "+  targ.getAttribute('data-file');
@@ -206,6 +206,25 @@
 			}
 		}
 		
+		function getLink(temp){
+			var link1="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/5/raw.mp4";
+			var link2="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/2/raw.mp4";
+			var link3="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/3/raw.mp4";
+			var link4="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/4/raw.mp4";
+			
+			switch(temp){
+				case "videos/garden1":
+					return link1;
+				case "videos/garden2":
+					return link2;
+				case "videos/fridge":
+					return link3;
+				case "videos/windowsill":
+					return link4;
+			}
+		}
+		
+		
 		function addItem(e){
 			var targ = e.target;
 			var temp = targ.getAttribute('data-file');
@@ -242,23 +261,8 @@
 		
 		
 		
-        function AddMouseWheel(){
-            $("body").mousewheel(function(event, delta){
-                var scroll_value = delta * 50;
-                if (jQuery.browser.webkit) {
-                    this.scrollLeft -= scroll_value;
-
-                } else {
-                    document.documentElement.scrollLeft -= scroll_value;
-                }
-                return false;
-            });
-        }
-
-        $(function(){
-            Resize();
-            AddMouseWheel();
-        })
+        
+        
     </script>
 </head>
 <body class="modern-ui" onresize="Resize()">
@@ -315,7 +319,7 @@
 
                 <div class="tile double bg-color-blueDark">
                     <div class="tile-content">
-                        <img src="images/michael.jpg" class="place-left"/>
+                        
                         <h3 style="margin-bottom: 5px;"> Channel Controller</h3>
                         <h4><span>Broadcasting </span></h4>
                         <h3><span id="controller">---</span></h3>
