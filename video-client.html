@@ -212,7 +212,7 @@
 						var curTime=video.currentTime*1000;
 						//curTime=curTime*1000;
 						if (Math.abs(estimatedTimeOnMaster-curTime)>threshold){
-							video.currentTime = estimatedTimeOnMaster;
+							video.currentTime = float(matches[1]);
 							main_content="Master:"+estimatedTimeOnMaster+" Cur:"+curTime+" Threshold: "+threshold +" NotSync - Sync";
 						}else{
 							main_content="Master:"+estimatedTimeOnMaster+" Cur:"+curTime+" Threshold: "+threshold +" Sync - Sync";
