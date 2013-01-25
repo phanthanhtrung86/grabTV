@@ -68,12 +68,15 @@
 	
 	<script>
 		"use strict";
+		
 		var controller = null;
 		var isAllReadyFlag=false;
 		var threshold=400;
 		var para=" ";
 		window.onload = function() {
-
+				drawScreen();
+				//setInterval(drawScreen, 33);
+			
 			var connection = new WebSocket('ws://localhost:8888');
 			if (connection == null)
 				alert("Message is sent null..."+connection);
@@ -250,6 +253,32 @@
 				container.insertBefore(new_element, container.firstChild);
 			  };
 	};
+	
+	
+    function drawScreen() {
+	//
+        var video = document.getElementById('video');
+        var cvas = document.getElementById('bubble-canvas');
+        //if (video.paused || video.ended) return;
+        var ctx = cvas.getContext('2d');
+        ctx.save();
+		
+        //ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, cvas.width, cvas.height);
+		var image = new Image();
+		/*
+		image.onload = function(){
+        ctx.drawImage(image,0,0);
+		};*/
+		image.src = "images/TV.jpg";
+		
+		ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, cvas.width, cvas.height);
+		//ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 30, 30, cvas.width-60, cvas.height-70);
+        ctx.restore();
+		alert("haha");
+    }
+    
+	
+	
 	function $_(sel) {
 	  return document.querySelector(sel);
 	}
@@ -257,6 +286,7 @@
 
 </head>
 <body class="modern-ui" onresize="Resize()">
+
 <div class="page secondary fixed-header">
     <div class="page-header ">
         <div class="page-header-content">
@@ -292,7 +322,8 @@
                 </div>
                 <div  style="width: 318px; height: 318px;"  class="tile video outline-color-green">   
                     <div >
-                        <video style="width: 318px; height: 318px;"  id="video" src="" controls="controls" autoplay="true" ></video>
+                        <video style="width: 318px; height: 318px;"   id="video" src="" controls="controls" autoplay="true" ></video>
+						<canvas id="bubble-canvas" width="318px" height="318px"></canvas>
                     </div>
                 </div>
 				
