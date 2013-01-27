@@ -29,6 +29,14 @@ div.borderline {
  position:absolute;
  left: 700px;
  top: 0px;
+ color: blue;
+ }
+ 
+ 
+ div.username1 {
+ position:absolute;
+ left: 1060px;
+ top: 40px;
  }
  
  div.client {
@@ -37,6 +45,14 @@ div.borderline {
  top: 0px;
  color: blue;
  }
+ 
+ div.client1 {
+ position:absolute;
+ left: 60px;
+ top: 40px;
+ color: blue;
+ }
+ 
  div.channel {
  position:absolute;
  left: 5px;
@@ -44,7 +60,19 @@ div.borderline {
  height:70px;
  width:390px;
  }
-  
+ 
+
+ 
+div.channel1 {
+ position:absolute;
+ left: 650px;
+ top: 45px;
+ height:70px;
+ width:390px;
+ }
+ 
+
+ 
 div.list{
  position: absolute;
  left: 400px;
@@ -55,6 +83,7 @@ div.list{
  
  
 }
+
  div.video{
  position: absolute;
  left: 5px;
@@ -63,6 +92,25 @@ div.list{
  width: 390px;
  overflow: auto;
 } 
+
+
+ div.video1{
+ position: absolute;
+ left: 60px;
+ top: 100px;
+ height: 400px;
+ width: 590px;
+ overflow: auto;
+} 
+ div.channelbutton {
+ position:absolute;
+ left: 670px;
+ top: 180px;
+ height:400px;
+ width:390px;
+ }
+
+
  
 div.detail{
  position: absolute;
@@ -72,6 +120,16 @@ div.detail{
  width: 660px;
  overflow: auto;
 } 
+
+div.detail1{
+ position: absolute;
+ left: 60px;
+ top: 490px;
+ height: 110px;
+ width: 960px;
+ overflow: auto;
+} 
+
 
  div.applebutton {
  position:absolute;
@@ -84,6 +142,19 @@ div.detail{
  left: 10px;
  top: 370px;
  }
+ 
+ div.tiviui {
+ position:absolute;
+ left: 0px;
+ top: 0px;
+ background: url('../images/tv.jpg');
+  
+ }
+ 
+ 
+ 
+ 
+ 
  
 video {
  width: 100%;

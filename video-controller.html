@@ -7,7 +7,7 @@
     <link href="public/css/modern.css" rel="stylesheet">
     <link href="public/css/theme-dark.css" rel="stylesheet">
     <link href="public/css/modern-responsive.css" rel="stylesheet">
-	
+	<link rel="stylesheet" href="css/VideoGallery.css" type="text/css"/> 
 	
 	 <script type="text/javascript" src="public/js/assets/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src="public/js/assets/jquery.mousewheel.min.js"></script>
@@ -268,82 +268,77 @@
         
     </script>
 </head>
-<body class="modern-ui" onresize="Resize()">
-<div class="page secondary fixed-header">
-    <div class="page-header ">
-        <div class="page-header-content">
-            <div class="user-login">
-                <a href="#">
-                    <div class="name">
-                        <span class="first-name">PHAN</span>
+<body >
+<div class="tiviui">
+	<img style="height:760px;width:1260px;" src="images/tv.jpg" alt="tv"/>
+	<div class="username1">
+		<a href="#">
+			<div class="name">
+				 <span class="first-name">PHAN</span>
                         <span class="last-name">Trung</span>
-                    </div>
-                    <div class="avatar">
-                        <img src="images/trung_avatar.jpg" alt="Avatar of Trung"/>
-                    </div>
-                </a>
-            </div>
-
-            <h1>Broadcast Controller</h1>
-        </div>
-    </div>
-
-    <div class="page-region">
-        <div class="page-region-content tiles">
-            <div id="chooser" class="tile-group tile-drag">
-				<div class="tile image outline-color-green" >
-					<div  class="selected tile-content">
-						
-							<img id="windowsill" data-file="videos/windowsill" src="images/windowsill.jpg" alt="" class="interactive" >	
-						
-					</div>
-				</div>
+			</div>
+			<div class="avatar">
+				<img style="width:60px;height=60px;" src="images/trung_avatar.jpg" alt="Avatar of Trung"/>
+			</div>
+		</a>
+	</div>
 				
-                <div class="tile image outline-color-green">
-                    <div class="tile-content">
-                        <img id="garden1" data-file="videos/garden1" src="images/garden1.jpg" alt="" class="interactive">
-                    </div>
-                </div>
-				<div class="tile image outline-color-green">
-                    <div class="tile-content">
-                        <img id="fridge" data-file="videos/fridge" src="images/fridge.jpg" alt="" class="interactive">
-                    </div>
-                </div>
-				<div class="tile image outline-color-green">
-                    <div class="tile-content">
-                        <img id="garden2" data-file="videos/garden2" src="images/garden2.jpg" alt="" class="interactive">
-                    </div>
-                </div>
-				 <div  style="width: 318px; height: 318px;"  class="tile video outline-color-green">
-                    <div >
-                        <video style="width: 318px; height: 318px;"  id="video" src="videos/windowsill.mp4" controls="controls" ></video>
-                    </div>
-                </div>
-
-                <div class="tile double bg-color-blueDark">
-                    <div class="tile-content">
-                        
-                        <h3 style="margin-bottom: 5px;"> Channel Controller</h3>
-                        <h4><span>Broadcasting </span></h4>
-                        <h3><span id="controller">---</span></h3>
-						<p>Total User Count: <span id="userCount"></span></p>
-
-                    </div>
-                </div>
+	<div class ="client1" >
+		<h1 style="color:blue">Broadcast Controller</h1>
+	</div>
 	
-                <div id="detailinfo" class="tile double bg-color-green" data-role="tile-slider" data-param-period="2000">
-                    <div class="tile-content">
-                        <h2 id="header2" >Windows Ill</h2>
-                        <h4 id="header5" >Windows is very beautiful</h4>
-                        <p id="para" >
-                            Congratulations! I'm really excited to celebrate with you all. Thanks for...
-                        </p>
-                    </div>   
-                </div>
+    <div class="channel1 bg-color-blueDark">
+		<div>
+			<h4><span>Broadcasting </span></h4>
+			<h3><span id="controller">---</span></h3>
+			<p>Total User Count: <span id="userCount"></span></p>
+
+		</div>
+	</div>
+				
+	<div   class="video1">
+		<div >
+			<video style="width: 580px; height: 390px;"  id="video" src="videos/windowsill.mp4" controls="controls" ></video>
+		</div>
+	</div>
+
+	<div class="detail1">
+		<h2 id="header2" >Windows Ill</h2>
+		<h4 id="header5" >Windows is very beautiful</h4>
+		<p id="para" >
+			Congratulations! I'm really excited to celebrate with you all. Thanks for...
+		</p>
+	</div>   	
+	
+	
+	
+    
+	<div id="chooser" class="channelbutton">
+		<div class="tile image outline-color-green" >
+			<div  class="selected tile-content">
+				
+					<img id="windowsill" data-file="videos/windowsill" src="images/windowsill.jpg" alt="" class="interactive" >	
 				
 			</div>
-        </div>
-    </div>
+		</div>
+		
+		<div class="tile image outline-color-green">
+			<div class="tile-content">
+				<img id="garden1" data-file="videos/garden1" src="images/garden1.jpg" alt="" class="interactive">
+			</div>
+		</div>
+		<div class="tile image outline-color-green">
+			<div class="tile-content">
+				<img id="fridge" data-file="videos/fridge" src="images/fridge.jpg" alt="" class="interactive">
+			</div>
+		</div>
+		<div class="tile image outline-color-green">
+			<div class="tile-content">
+				<img id="garden2" data-file="videos/garden2" src="images/garden2.jpg" alt="" class="interactive">
+			</div>
+		</div>
+	</div>
+
 </div>
 
  <!-- kinesis js sdk -->
