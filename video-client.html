@@ -8,7 +8,8 @@
     <link href="css/modern.css" rel="stylesheet">
     <link href="css/theme-dark.css" rel="stylesheet">
     <link href="css/modern-responsive.css" rel="stylesheet">
-
+	<link rel="stylesheet" href="css/VideoGallery.css" type="text/css"/> 
+	
     <script src="public/js/assets/jquery-1.8.2.min.js"></script>
     <script src="public/js/assets/google-analytics.js"></script>
     <script src="public/js/assets/jquery.mousewheel.min.js"></script>
@@ -213,9 +214,9 @@
 						//curTime=curTime*1000;
 						if (Math.abs(estimatedTimeOnMaster-curTime)>threshold){
 							video.currentTime = float(matches[1]);
-							main_content="Master:"+estimatedTimeOnMaster+" Cur:"+curTime+" Threshold: "+threshold +" NotSync - Sync";
+							main_content="Master:"+int(estimatedTimeOnMaster)+" Cur:"+int(curTime)+" Threshold: "+threshold +" NotSync - Sync";
 						}else{
-							main_content="Master:"+estimatedTimeOnMaster+" Cur:"+curTime+" Threshold: "+threshold +" Sync - Sync";
+							main_content="Master:"+int(estimatedTimeOnMaster)+" Cur:"+int(curTime)+" Threshold: "+threshold +" Sync - Sync";
 						}
 						if (video.paused){
 							video.play();
@@ -224,7 +225,7 @@
 				}
 				new_element.setAttribute("class",bg_color);
 				
-				new_element.setAttribute("style","height:80px; width:600px;display:inline-block;");
+				new_element.setAttribute("style","height:80px; width:240px;display:inline-block;");
 				//list-style-type:none;
 						
 				var div1=document.createElement('div');
@@ -285,67 +286,66 @@
 </script>
 
 </head>
-<body class="modern-ui" onresize="Resize()">
+<body >
 
-<div class="page secondary fixed-header">
-    <div class="page-header ">
-        <div class="page-header-content">
-            <div class="user-login">
-                <a href="#">
-                    <div class="name">
-                        <span class="first-name">NGUYEN</span>
-                        <span class="last-name">Steven</span>
-                    </div>
-                    <div class="avatar">
-                        <img src="images/steven_avatar.jpg" alt="client avatar"/>
-                    </div>
-                </a>
-            </div>
-
-            <h1>Client</h1>
-        </div>
-    </div>
-
-    <div class="page-region">
-        <div class="page-region-content tiles">
-            <div class="tile-group tile-drag">
+<div class="container" id="four">
+    <div class="borderline">
+	
+	<div class="username">
+		<a href="#">
+			<div class="name">
+				<span class="first-name">NGUYEN</span>
+				<span class="last-name">Steven</span>
+			</div>
+			<div class="avatar">
+				<img style="width:30px;height=30px;" src="images/steven_avatar.jpg" alt="client avatar"/>
+			</div>
+		</a>
+	</div>
 				
+	<div class ="client" >
+		<h1 style="color:blue">Client</h1>
+	</div>
+				
+				
+	<div class="channel bg-color-blueDark">
+		<div class="tile-content">
+		   
+			<h4><span>Current broadcasting channel </span></h4>
+			<h3><span id="controller">---</span></h3>
+			<p>Total User Count: <span id="userCount"></span></p>
+		</div>
+	</div>
+	<div  class="list bg-color-orange" >
+		<ul id="myList" class="listview" style="overflow:auto;">
 			
-				
-				<div class="tile  bg-color-blueDark" style="height: 100%;width: 646px;">
-                    <div class="tile-content">
-                       
-                        <h4><span>Current broadcasting channel </span></h4>
-                        <h3><span id="controller">---</span></h3>
-						<p>Total User Count: <span id="userCount"></span></p>
-                    </div>
-                </div>
-                <div  style="width: 318px; height: 318px;"  class="tile video outline-color-green">   
-                    <div >
-                        <video style="width: 318px; height: 318px;"   id="video" src="" controls="controls"  ></video>
-						<canvas id="bubble-canvas" width="318px" height="318px"></canvas>
-                    </div>
-                </div>
+		</ul>
+	</div>
+	
+	<div  class="video  outline-color-green">   
+			<div >
+				<video style="width: 100%; height: 270px"   id="video" src="" controls="controls"  ></video>
+			</div>
+	</div>
 				
 				
-				<div id="detailinfo" class="tile double bg-color-green" style="width: 318px; height: 318px;" data-role="tile-slider" data-param-period="2000">
-                    <div class="tile-content">
-                        <h2 id="header2" >Channel Summary</h2>
-                        <h4 id="summary" >
-                            ----
-                        </h4>
-                    </div>   
-                </div>
-
-				<div  class="tile double bg-color-orange" style="height:400px; width:646px;overflow:auto;">
-                    <ul id="myList" class="listview" style="overflow:auto;">
-                        
-                    </ul>
-                </div>
-				
-            </div>  
-        </div>
-    </div>
+	<div class="detail bg-color-green" >
+		<div class="tile-content">
+			<h3 id="header2" >Channel Summary</h3>
+			<h4 id="summary" >
+				----
+			</h4>
+		</div>   
+	</div>
+	<div class="applebutton">
+		<img style="width:50px;height=50px;" src="images/applebutton.jpg" alt="apple button"/>
+	</div>
+	
+	
+</div>
+		<div class="camera">
+		<img style="width:30px;height=30px;" src="images/camera.jpg" alt="camera"/>
+	</div>
 </div>
 
 
