@@ -74,6 +74,8 @@
 		var isAllReadyFlag=false;
 		var threshold=0.4;
 		var para=" ";
+		var sum=0;
+		var countsent=0;
 		window.onload = function() {
 				//drawScreen();
 				//setInterval(drawScreen, 33);
@@ -95,6 +97,8 @@
 			}, true);
 			
 			video.addEventListener("pause", function() {
+				sum=0;
+				countsent=0;
 			}, true);
 			
 			// Script to be run when the media actually has enough buffer
@@ -104,7 +108,10 @@
 				connection.send("canplay "+video.currentTime);
 			}, true);
 				
-			
+			video.addEventListener("ended", function() {
+				var average= sum/countsent;
+				//alert("Average latency:"+average);
+			}, false);
 		
 		
 			var container = document.getElementById('myList');
@@ -172,7 +179,8 @@
 						video.src = link;
 						video.setAttribute("autobuffer","true");
 						video.load();
-						
+						sum=0;
+						countsent=0;
 						//progressUpdate(true);
 						break;	
 					case "userCount":
@@ -202,6 +210,8 @@
 						//alert(""+matches[1]);
 						var estimatedTimeOnMaster = parseFloat(matches[1]);
 						var curTime=parseFloat(video.currentTime);
+						sum+=Math.abs(estimatedTimeOnMaster-curTime);
+						countsent++;
 						if (Math.abs(estimatedTimeOnMaster-curTime)>threshold){
 							video.currentTime = estimatedTimeOnMaster;
 							main_content="Master:"+(estimatedTimeOnMaster)+" Cur:"+(curTime)+" Threshold: "+threshold +" NotSync - Sync";
