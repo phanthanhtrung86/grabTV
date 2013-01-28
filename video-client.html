@@ -72,7 +72,7 @@
 		
 		var controller = null;
 		var isAllReadyFlag=false;
-		var threshold=400;
+		var threshold=0.4;
 		var para=" ";
 		window.onload = function() {
 				//drawScreen();
@@ -117,6 +117,8 @@
 				var link3="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/3/raw.mp4";
 				var link4="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/4/raw.mp4";
 				
+				//http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/3/raw.mp4
+				
 				switch(temp){
 					case "videos/garden1":
 						return link1;
@@ -131,30 +133,21 @@
 			connection.onmessage = function (message) {  
 		
 				var matches;
-				
 				matches = message.data.split(/\s/g);
-				
-				
-				
-				//alert("hahahahah "+test);
-				
-				
-				
-				
 				var new_element = document.createElement('li');
 				var bg_color="bg-color-pinkDark fg-color-white";
 				var img_src="images/timestamp_icon.jpg";
 				switch (matches[0]){
 					case "control":
-						bg_color="bg-color-pink fg-color-white";
+						bg_color="bg-color-green fg-color-white";
 						var img_src="images/controller_icon.jpg";
 						break;	
 					case "userCount":
-						bg_color="bg-color-blue fg-color-white";
+						bg_color="bg-color-green fg-color-white";
 						var img_src="images/count_icon.jpg";
 						break;
 					case "pause":
-						bg_color="bg-color-red fg-color-white";
+						bg_color="bg-color-green fg-color-white";
 						var img_src="images/pause_icon.jpg";
 						break;
 					case "timestamp":
@@ -186,6 +179,7 @@
 						userCount=parseInt(matches[1]);
 						userCount=userCount-1;
 						document.getElementById("userCount").innerHTML = userCount;
+						main_content=" "+userCount;
 						break;
 					case "pause":
 						video.pause();
@@ -206,17 +200,14 @@
 						break;
 					case "timestamp":
 						//alert(""+matches[1]);
-						var estimatedTimeOnMaster = (matches[1])*1000;
-						//video.currentTime = estimatedTimeOnMaster;
-						
-						//estimatedTimeOnMaster=estimatedTimeOnMaster*1000;
-						var curTime=video.currentTime*1000;
-						//curTime=curTime*1000;
+						var estimatedTimeOnMaster = parseFloat(matches[1]);
+						var curTime=parseFloat(video.currentTime);
 						if (Math.abs(estimatedTimeOnMaster-curTime)>threshold){
-							video.currentTime = float(matches[1]);
-							main_content="Master:"+int(estimatedTimeOnMaster)+" Cur:"+int(curTime)+" Threshold: "+threshold +" NotSync - Sync";
+							video.currentTime = estimatedTimeOnMaster;
+							main_content="Master:"+(estimatedTimeOnMaster)+" Cur:"+(curTime)+" Threshold: "+threshold +" NotSync - Sync";
+							bg_color="bg-color-red fg-color-white";
 						}else{
-							main_content="Master:"+int(estimatedTimeOnMaster)+" Cur:"+int(curTime)+" Threshold: "+threshold +" Sync - Sync";
+							main_content="Master:"+(estimatedTimeOnMaster)+" Cur:"+(curTime)+" Threshold: "+threshold +" Sync - Sync";
 						}
 						if (video.paused){
 							video.play();
@@ -225,7 +216,7 @@
 				}
 				new_element.setAttribute("class",bg_color);
 				
-				new_element.setAttribute("style","height:80px; width:240px;display:inline-block;");
+				new_element.setAttribute("style","height:100%; width:240px;display:inline-block;");
 				//list-style-type:none;
 						
 				var div1=document.createElement('div');
@@ -240,6 +231,7 @@
 				header4.setAttribute("class","fg-color-white");
 				
 				header4.innerHTML=matches[0];
+				
 				div2.appendChild(header4);
 				
 				var paragraph=document.createElement('p');

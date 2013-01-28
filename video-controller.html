@@ -65,22 +65,35 @@
 			var isCurVideoFlag="";
 			var userCount=0;
 			var time_interval = 5000;
-			var myTimer;
-			var myTimeout;
+			var myTimer=null;
+			var myTimeout=null;
 			var video = $_("video");
 			
 
-			video.addEventListener("playing", function() {
-				// the function set interval will replace for timeupdate
-				// check all the clients are ready or not?
-				// when all players are ready --> isAllReadyFlag >0
+			video.addEventListener("durationchange", function() {
+				//alert("durationchange");
+				video.pause();
+				connection.send("pause " + video.currentTime);
+				//alert("duration change");
+			}, false);
+			
+			video.addEventListener("timeupdate", function() {
+			}, false);
+			
+			video.addEventListener('play', function() {
+			//resetTimer();
+			window.clearInterval(myTimer);
+				window.clearTimeout(myTimeout);
 				if(isAllReadyFlag>0){
+				//if(0==0){
 					myTimeout=setTimeout(function(){connection.send("timestamp " + video.currentTime)},0);
-					myTimer=setInterval(function(){connection.send("timestamp " + video.currentTime)},time_interval);
+					myTimer=setInterval(function(){connection.send("timestamp " + video.currentTime);},time_interval);
+					//connection.send("timestamp " + video.currentTime);
 				}else{
 					alert("Not ready for all users");
 				}
-			}, true);
+			}, false);
+			
 			
 			function resetTimer(){
 				window.clearInterval(myTimer);
@@ -92,17 +105,17 @@
 				connection.send("pause "+video.currentTime);
 				window.clearInterval(myTimer);
 				window.clearTimeout(myTimeout);
-			}, true);
+			}, false);
 			
 			video.addEventListener("ended", function() {
 				// Delete the time interval when video stop
 				window.clearInterval(myTimer);
 				window.clearTimeout(myTimeout);	
-			}, true);
+			}, false);
 			
 			video.addEventListener("canplay", function() {
 				connection.send("canplay "+video.currentTime);
-			}, true);
+			}, false);
 			
 			
 			// most important part - incoming messages
@@ -215,6 +228,9 @@
 			var link3="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/3/raw.mp4";
 			var link4="http://stream4.noterik.com/progressive/stream4/domain/linkedtv/user/avro/video/5/rawvideo/4/raw.mp4";
 			
+			
+
+			
 			switch(temp){
 				case "videos/garden1":
 					return link1;
@@ -238,20 +254,20 @@
 			
 			switch(temp){
 				case "videos/garden1":
-					header5="Garden 1 is created specially";
-					para="Huh! Waw!!! I'm really excited to celebrate with you all. Thanks for...";
+					header5="Small";
+					para="Size: 320 x 180 100kbit mp4";
 					break;
 				case "videos/garden2":
-					header5="Garden 2 is very beautiful";
-					para="Congratulations! Garden 2";
+					header5="Average";
+					para="Size: 640x360 800kbit mp4";
 					break;
 				case "videos/fridge":
-					header5="Fridge is very beautiful";
-					para="Congratulations! Fridge. Thanks for...";
+					header5="Fair";
+					para="Size: 1280x720 1,4Mbit mp4";
 					break;
 				case "videos/windowsill":
-					header5="Windows is very beautiful";
-					para="Congratulations! I'm really excited to celebrate with you all. Thanks for...";
+					header5="Biggest";
+					para="Size: 1920x1080 2,7Mbit mp4";
 					break;
 			}
 			
