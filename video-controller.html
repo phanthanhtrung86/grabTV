@@ -250,29 +250,29 @@
 				
 			var header2=temp;
 			
-			var header5="";
+			//var header5="";
 			
 			switch(temp){
 				case "videos/garden1":
-					header5="Small";
+				//	header5="Small";
 					para="Size: 320 x 180 100kbit mp4";
 					break;
 				case "videos/garden2":
-					header5="Average";
+					//header5="Average";
 					para="Size: 640x360 800kbit mp4";
 					break;
 				case "videos/fridge":
-					header5="Fair";
+					//header5="Fair";
 					para="Size: 1280x720 1,4Mbit mp4";
 					break;
 				case "videos/windowsill":
-					header5="Biggest";
+					//header5="Biggest";
 					para="Size: 1920x1080 2,7Mbit mp4";
 					break;
 			}
 			
 			document.getElementById("header2").innerHTML=header2;
-			document.getElementById("header5").innerHTML=header5;
+			//document.getElementById("header5").innerHTML=header5;
 			document.getElementById("para").innerHTML=para;
 		}
 		
@@ -287,43 +287,28 @@
 <body >
 <div class="tiviui">
 	<img style="height:760px;width:1260px;" src="images/tv.jpg" alt="tv"/>
-	<div class="username1">
-		<a href="#">
-			<div class="name">
-				 <span class="first-name">PHAN</span>
-                        <span class="last-name">Trung</span>
-			</div>
-			<div class="avatar">
-				<img style="width:60px;height=60px;" src="images/trung_avatar.jpg" alt="Avatar of Trung"/>
-			</div>
-		</a>
-	</div>
-				
-	<div class ="client1" >
-		<h1 style="color:blue">Broadcast Controller</h1>
-	</div>
 	
-    <div class="channel1 bg-color-blueDark">
+	
+    <div class="channel1">
 		<div>
-			<h4><span>Broadcasting </span></h4>
-			<h3><span id="controller">---</span></h3>
-			<p>Total User Count: <span id="userCount"></span></p>
+			<h3><span id="controller" style="visibility:hidden;">---</span></h3>
+			<h3>Total User Count: <span id="userCount"></span></h3>
 
 		</div>
 	</div>
 				
 	<div   class="video1">
 		<div >
-			<video style="width: 580px; height: 390px;"  id="video" src="videos/windowsill.mp4" controls="controls" ></video>
+			<video   id="video" style="height:450px;" src="videos/windowsill.mp4" controls="controls" ></video>
 		</div>
 	</div>
 
 	<div class="detail1">
 		<h2 id="header2" >---</h2>
-		<h4 id="header5" >---</h4>
-		<p id="para" >
+		
+		<h4 id="para" >
 			...
-		</p>
+		</h4>
 	</div>   	
 	
 	
@@ -331,7 +316,7 @@
     
 	<div id="chooser" class="channelbutton">
 		<div class="tile image outline-color-green" >
-			<div  class="selected tile-content">
+			<div  class="tile-content">
 				
 					<img id="windowsill" data-file="videos/windowsill" src="images/windowsill.jpg" alt="" class="interactive" >	
 				
